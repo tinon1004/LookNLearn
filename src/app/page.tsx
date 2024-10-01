@@ -6,6 +6,8 @@ export default function WebcamPage() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [result, setResult] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -44,6 +46,7 @@ export default function WebcamPage() {
     }
     setIsCapturing(false);
     setImageSrc(null);
+    setResult(null);
   }, []);
 
   const captureImage = useCallback(() => {
@@ -59,8 +62,50 @@ export default function WebcamPage() {
     }
   }, []);
 
+  const checkAccuracy = async () => {
+    if (!imageSrc) return;
+
+    setIsLoading(true);
+    try {
+      // Base64 데이터를 Blob으로 변환
+      const response = await fetch(imageSrc);
+      const blob = await response.blob();
+
+      // FormData 생성 및 이미지 추가
+      const formData = new FormData();
+      formData.append('image', blob, 'captured_image.jpg');
+
+      // 서버로 이미지 전송
+      const uploadResponse = await fetch('http://127.0.0.1:5000/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('업로드 실패');
+      }
+
+      // 결과 가져오기
+      const resultResponse = await fetch('http://127.0.0.1:5000/');
+      if (!resultResponse.ok) {
+        throw new Error('결과 가져오기 실패');
+      }
+
+      const resultData = await resultResponse.json();
+      console.log('서버 응답:', resultData);
+      setResult(JSON.stringify(resultData, null, 2));
+
+    } catch (err) {
+      console.error('오류 발생:', err);
+      setError('서버와의 통신 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const retakePhoto = () => {
     setImageSrc(null);
+    setResult(null);
     startWebcam();
   };
 
@@ -74,7 +119,7 @@ export default function WebcamPage() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' }}>룩앤런</h1>
+      <h1 style={{ fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' }}>웹캠 앱</h1>
       <div style={{ width: '100%', maxWidth: '640px', aspectRatio: '16 / 9', backgroundColor: '#f0f0f0', borderRadius: '8px', overflow: 'hidden', margin: '0 auto' }}>
         {isCapturing && !imageSrc && (
           <video 
@@ -111,12 +156,35 @@ export default function WebcamPage() {
             >
               {imageSrc ? '다시 찍기' : '사진 찍기'}
             </button>
+            {imageSrc && (
+              <button 
+                onClick={checkAccuracy}
+                disabled={isLoading}
+                style={{ 
+                  backgroundColor: '#6366f1', 
+                  color: 'white', 
+                  padding: '10px 20px', 
+                  borderRadius: '5px', 
+                  border: 'none', 
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  opacity: isLoading ? 0.7 : 1
+                }}
+              >
+                {isLoading ? '처리 중...' : '정확도 확인하기'}
+              </button>
+            )}
             <button onClick={stopWebcam} style={{ backgroundColor: '#e53e3e', color: 'white', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer' }}>
               웹캠 중지
             </button>
           </>
         )}
       </div>
+      {result && (
+        <div style={{ marginTop: '20px', padding: '10px', backgroundColor: '#f7fafc', borderRadius: '5px' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>분석 결과:</h2>
+          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{result}</pre>
+        </div>
+      )}
     </div>
   );
 }
