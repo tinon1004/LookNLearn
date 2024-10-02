@@ -11,7 +11,7 @@ function MainPage({ onNavigate }: { onNavigate: (page: string) => void }) {
           onClick={() => onNavigate('landing')}
           className="bg-gray-500 text-white font-semibold py-2 px-4 rounded hover:bg-gray-700 transition duration-300"
         >
-          뒤로 가기
+          ⬅️
         </button>
       </div>
       <div className="flex justify-center mb-4">
