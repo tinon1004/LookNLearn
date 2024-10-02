@@ -56,7 +56,7 @@ function LandingPage({ onStart }: { onStart: () => void }) {
   );
 }
 
-export default function moveMainPage() {
+export default function MovePage() {
   const [isStarted, setIsStarted] = useState(false);
 
   if (!isStarted) {
