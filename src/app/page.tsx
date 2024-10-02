@@ -7,6 +7,7 @@ export default function WebcamPage() {
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isUploaded, setIsUploaded] = useState<boolean>(false);
   const [result, setResult] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -47,6 +48,7 @@ export default function WebcamPage() {
     setIsCapturing(false);
     setImageSrc(null);
     setResult(null);
+    setIsUploaded(false);
   }, []);
 
   const captureImage = useCallback(() => {
@@ -58,11 +60,12 @@ export default function WebcamPage() {
       if (ctx) {
         ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
         setImageSrc(canvas.toDataURL('image/jpeg'));
+        setIsUploaded(false);
       }
     }
   }, []);
 
-  const checkAccuracy = async () => {
+  const uploadPhoto = async () => {
     if (!imageSrc) return;
 
     setIsLoading(true);
@@ -85,7 +88,26 @@ export default function WebcamPage() {
         throw new Error('업로드 실패');
       }
 
-      // 결과 가져오기
+      setIsUploaded(true);
+      setError(null);
+
+    } catch (err) {
+      console.error('업로드 오류:', err);
+      setError('이미지 업로드 중 오류가 발생했습니다.');
+      setIsUploaded(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const checkAccuracy = async () => {
+    if (!isUploaded) {
+      setError('먼저 사진을 업로드해주세요.');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
       const resultResponse = await fetch('http://127.0.0.1:5000/');
       if (!resultResponse.ok) {
         throw new Error('결과 가져오기 실패');
@@ -94,10 +116,11 @@ export default function WebcamPage() {
       const resultData = await resultResponse.json();
       console.log('서버 응답:', resultData);
       setResult(JSON.stringify(resultData, null, 2));
+      setError(null);
 
     } catch (err) {
-      console.error('오류 발생:', err);
-      setError('서버와의 통신 중 오류가 발생했습니다.');
+      console.error('결과 확인 오류:', err);
+      setError('결과를 가져오는 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -106,6 +129,7 @@ export default function WebcamPage() {
   const retakePhoto = () => {
     setImageSrc(null);
     setResult(null);
+    setIsUploaded(false);
     startWebcam();
   };
 
@@ -157,21 +181,38 @@ export default function WebcamPage() {
               {imageSrc ? '다시 찍기' : '사진 찍기'}
             </button>
             {imageSrc && (
-              <button 
-                onClick={checkAccuracy}
-                disabled={isLoading}
-                style={{ 
-                  backgroundColor: '#6366f1', 
-                  color: 'white', 
-                  padding: '10px 20px', 
-                  borderRadius: '5px', 
-                  border: 'none', 
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  opacity: isLoading ? 0.7 : 1
-                }}
-              >
-                {isLoading ? '처리 중...' : '정확도 확인하기'}
-              </button>
+              <>
+                <button 
+                  onClick={uploadPhoto}
+                  disabled={isLoading}
+                  style={{ 
+                    backgroundColor: '#6366f1', 
+                    color: 'white', 
+                    padding: '10px 20px', 
+                    borderRadius: '5px', 
+                    border: 'none', 
+                    cursor: isLoading ? 'not-allowed' : 'pointer',
+                    opacity: isLoading ? 0.7 : 1
+                  }}
+                >
+                  {isLoading ? '업로드 중...' : '사진 업로드하기'}
+                </button>
+                <button 
+                  onClick={checkAccuracy}
+                  disabled={isLoading || !isUploaded}
+                  style={{ 
+                    backgroundColor: '#9333ea', 
+                    color: 'white', 
+                    padding: '10px 20px', 
+                    borderRadius: '5px', 
+                    border: 'none', 
+                    cursor: (isLoading || !isUploaded) ? 'not-allowed' : 'pointer',
+                    opacity: (isLoading || !isUploaded) ? 0.7 : 1
+                  }}
+                >
+                  {isLoading ? '처리 중...' : '정확도 확인하기'}
+                </button>
+              </>
             )}
             <button onClick={stopWebcam} style={{ backgroundColor: '#e53e3e', color: 'white', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer' }}>
               웹캠 중지
