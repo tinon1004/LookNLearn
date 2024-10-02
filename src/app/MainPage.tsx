@@ -1,10 +1,19 @@
 import { useState } from 'react';
+import LandingPage from './page';
 import WebcamPage from './WebcamPage';
 import InstructionPage from './InstructionPage'; 
 
 function MainPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   return (
     <div className="flex flex-col items-center justify-start h-screen p-4">
+      <div className="absolute top-4 left-4">
+        <button
+          onClick={() => onNavigate('landing')}
+          className="bg-gray-500 text-white font-semibold py-2 px-4 rounded hover:bg-gray-700 transition duration-300"
+        >
+          뒤로 가기
+        </button>
+      </div>
       <div className="flex justify-center mb-4">
         <button
           onClick={() => onNavigate('instruction')} 
@@ -25,14 +34,16 @@ function MainPage({ onNavigate }: { onNavigate: (page: string) => void }) {
 }
 
 export default function MovePage() {
-  const [currentPage, setCurrentPage] = useState<'main' | 'webcam' | 'instruction'>('main');
+  const [currentPage, setCurrentPage] = useState<'main' | 'landing' | 'webcam' | 'instruction'>('main');
 
   const handleNavigate = (page: string) => {
-    setCurrentPage(page as 'webcam' | 'instruction'); 
+    setCurrentPage(page as 'landing' | 'webcam' | 'instruction'); 
   };
 
   if (currentPage === 'main') {
     return <MainPage onNavigate={handleNavigate} />;
+  } else if (currentPage === 'landing') {
+    return <LandingPage />;
   } else if (currentPage === 'webcam') {
     return <WebcamPage />;
   } else {
