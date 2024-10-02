@@ -143,7 +143,7 @@ export default function WebcamPage() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1 style={{ fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' }}>웹캠 앱</h1>
+      <h1 style={{ fontSize: '24px', fontWeight: 'bold', textAlign: 'center', marginBottom: '20px' }}>룩앤런</h1>
       <div style={{ width: '100%', maxWidth: '640px', aspectRatio: '16 / 9', backgroundColor: '#f0f0f0', borderRadius: '8px', overflow: 'hidden', margin: '0 auto' }}>
         {isCapturing && !imageSrc && (
           <video 
