@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import WebcamPage from './WebcamPage';
+import MainPage from './MainPage';
 
 function LandingPage({ onStart }: { onStart: () => void }) {
   return (
@@ -26,7 +26,6 @@ function LandingPage({ onStart }: { onStart: () => void }) {
           <button
             onClick={onStart}
             className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
-            style={{ backgroundColor: '#98A5B3' }}
           >
             시작하기
           </button>
@@ -57,12 +56,12 @@ function LandingPage({ onStart }: { onStart: () => void }) {
   );
 }
 
-export default function App() {
+export default function moveMainPage() {
   const [isStarted, setIsStarted] = useState(false);
 
   if (!isStarted) {
     return <LandingPage onStart={() => setIsStarted(true)} />;
   }
 
-  return <WebcamPage />;
+  return <MainPage />;
 }
