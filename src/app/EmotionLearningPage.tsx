@@ -9,14 +9,12 @@ import {
 } from './EmotionData';
 
 function EmotionLearningPage({ onStart }: { onStart: () => void }) {
-  const [currentImage, setCurrentImage] = useState<ImageData>(getRandomImage());
-  const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [attempts, setAttempts] = useState(0);
   const [showNextButton, setShowNextButton] = useState(false);
+  const currentImage = getRandomImage();
 
   const handleEmotionSelect = (emotion: Emotion) => {
-    setSelectedEmotion(emotion);
     const correct = emotion === currentImage.correctEmotion;
     setIsCorrect(correct);
     
