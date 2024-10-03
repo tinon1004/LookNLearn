@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import WebcamPage from './WebcamPage';
 import { 
   Emotion, 
-  ImageData, 
   emotions, 
   getRandomImage, 
   emotionColors 
