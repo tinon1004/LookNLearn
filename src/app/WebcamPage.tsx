@@ -94,6 +94,7 @@ export default function WebcamPage() {
       }
 
       const analysisResult = await uploadResponse.json();
+      console.log('분석 결과:', analysisResult);
       setResult(analysisResult);
       setIsUploaded(true);
       setError(null);
