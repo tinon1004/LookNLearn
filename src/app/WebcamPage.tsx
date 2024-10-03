@@ -2,13 +2,18 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 
+interface AnalysisResult {
+    label: string;
+    probability: number;
+  }
+
 export default function WebcamPage() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUploaded, setIsUploaded] = useState<boolean>(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<AnalysisResult | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -88,6 +93,8 @@ export default function WebcamPage() {
         throw new Error('업로드 실패');
       }
 
+      const analysisResult = await uploadResponse.json();
+      setResult(analysisResult);
       setIsUploaded(true);
       setError(null);
 
@@ -95,6 +102,7 @@ export default function WebcamPage() {
       console.error('업로드 오류:', err);
       setError('이미지 업로드 중 오류가 발생했습니다.');
       setIsUploaded(false);
+      setResult(null);
     } finally {
       setIsLoading(false);
     }
@@ -181,8 +189,11 @@ export default function WebcamPage() {
       </div>
       {result && (
         <div style={{ marginTop: '20px', padding: '10px', backgroundColor: '#f7fafc', borderRadius: '5px' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>분석 결과:</h2>
-          <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{result}</pre>
+          <h2 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '10px' }}>표정 분석 결과:</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p style={{ fontSize: '16px' }}><strong>감정:</strong> {result.label}</p>
+            <p style={{ fontSize: '16px' }}><strong>확률:</strong> {(result.probability * 100).toFixed(2)}%</p>
+          </div>
         </div>
       )}
     </div>
