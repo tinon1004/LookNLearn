@@ -149,6 +149,7 @@ export default function WebcamPage() {
         )}
       </div>
       {error && <p style={{ color: 'red', textAlign: 'center', marginTop: '10px' }}>{error}</p>}
+      {isUploaded && <p style={{ color: 'green', textAlign: 'center' }}>사진 업로드 완료!</p>}
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', gap: '10px' }}>
         {!isCapturing ? (
           <button onClick={startWebcam} style={{ backgroundColor: '#3490dc', color: 'white', padding: '10px 20px', borderRadius: '5px', border: 'none', cursor: 'pointer' }}>
