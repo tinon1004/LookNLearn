@@ -11,7 +11,7 @@ function InstructionPage({ onNavigate }: { onNavigate: (page: string) => void })
         onClick={() => onNavigate('main')}
         className="bg-gray-500 text-white font-semibold py-2 px-4 rounded hover:bg-gray-700 transition duration-300"
         >
-        ⬅️ 
+        ⬅️
        </button>
       </div>
       <h1 className="text-3xl font-bold mb-4">서비스 소개</h1>
