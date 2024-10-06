@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import MainPage from './MainPage'; 
-import WebcamPage from './WebcamPage';
+import LearningStep2Page from './LearningStep2Page';
 
 
 function InstructionPage({ onNavigate }: { onNavigate: (page: string) => void }) {
@@ -21,7 +21,7 @@ function InstructionPage({ onNavigate }: { onNavigate: (page: string) => void })
         간단한 단계로 시작하여 유용한 도구를 제공받으세요.
       </p>
       <button
-        onClick={() => onNavigate('webcam')} 
+        onClick={() => onNavigate('LearningStep2')} 
         className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
       >
         학습하기
@@ -31,16 +31,16 @@ function InstructionPage({ onNavigate }: { onNavigate: (page: string) => void })
 }
 
 export default function MovePage() {
-    const [currentPage, setCurrentPage] = useState<'instruction' | 'webcam' | 'main'>('instruction');
+    const [currentPage, setCurrentPage] = useState<'instruction' | 'LearningStep2' | 'main'>('instruction');
   
     const handleNavigate = (page: string) => {
-      setCurrentPage(page as 'webcam' | 'main'); 
+      setCurrentPage(page as 'LearningStep2' | 'main'); 
     };
   
     if (currentPage === 'instruction') {
       return <InstructionPage onNavigate={handleNavigate} />;
-    } else if (currentPage === 'webcam') {
-      return <WebcamPage />;
+    } else if (currentPage === 'LearningStep2') {
+      return <LearningStep2Page />;
     } else {
       return <MainPage />; 
     }

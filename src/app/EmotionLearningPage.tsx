@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import WebcamPage from './WebcamPage';
+import LearningStep2Page from './LearningStep2Page';
 import { 
   Emotion, 
   emotions, 
@@ -121,5 +121,5 @@ export default function MovePage() {
     return <EmotionLearningPage onStart={() => setIsStarted(true)} />;
   }
 
-  return <WebcamPage />;
+  return <LearningStep2Page />;
 }
