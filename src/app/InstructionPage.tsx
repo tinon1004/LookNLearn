@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import MainPage from './MainPage'; 
-import LearningStep2Page from './LearningStep2Page';
+import LearningStep1Page from './LearningStep1Page';
 
 
 function InstructionPage({ onNavigate }: { onNavigate: (page: string) => void }) {
@@ -21,7 +21,7 @@ function InstructionPage({ onNavigate }: { onNavigate: (page: string) => void })
         간단한 단계로 시작하여 유용한 도구를 제공받으세요.
       </p>
       <button
-        onClick={() => onNavigate('LearningStep2')} 
+        onClick={() => onNavigate('LearningStep1')} 
         className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
       >
         학습하기
@@ -31,16 +31,16 @@ function InstructionPage({ onNavigate }: { onNavigate: (page: string) => void })
 }
 
 export default function MovePage() {
-    const [currentPage, setCurrentPage] = useState<'instruction' | 'LearningStep2' | 'main'>('instruction');
+    const [currentPage, setCurrentPage] = useState<'instruction' | 'LearningStep1' | 'main'>('instruction');
   
     const handleNavigate = (page: string) => {
-      setCurrentPage(page as 'LearningStep2' | 'main'); 
+      setCurrentPage(page as 'LearningStep1' | 'main'); 
     };
   
     if (currentPage === 'instruction') {
       return <InstructionPage onNavigate={handleNavigate} />;
-    } else if (currentPage === 'LearningStep2') {
-      return <LearningStep2Page />;
+    } else if (currentPage === 'LearningStep1') {
+      return <LearningStep1Page />;
     } else {
       return <MainPage />; 
     }

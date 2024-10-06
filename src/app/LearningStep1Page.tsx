@@ -71,7 +71,7 @@ function LearningStep1Page({ onStart }: LearningStep1PageProps ) {
               <span className="text-sm text-gray-700">{emotion}</span>
             </button>
           ))}
-        </div>
+        
 
             {isCorrect !== null && (
                 <div className={`flex flex-col items-center justify-center p-4 rounded-lg ${
@@ -88,6 +88,7 @@ function LearningStep1Page({ onStart }: LearningStep1PageProps ) {
                     </div>
                 </div>
             )}
+        </div>
 
 
       
