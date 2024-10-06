@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import LandingPage from './page';
-import EmotionLearningPage from './EmotionLearningPage';
+import LearningStep1Page from './LearningStep1Page';
 import InstructionPage from './InstructionPage'; 
 
 function MainPage({ onNavigate }: { onNavigate: (page: string) => void }) {
@@ -22,7 +22,7 @@ function MainPage({ onNavigate }: { onNavigate: (page: string) => void }) {
           서비스 소개
         </button>
         <button 
-          onClick={() => onNavigate('emotionLearning')} 
+          onClick={() => onNavigate('LearningStep1')} 
           className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-300 ml-4"
         >
           학습하기
@@ -34,18 +34,18 @@ function MainPage({ onNavigate }: { onNavigate: (page: string) => void }) {
 }
 
 export default function MovePage() {
-  const [currentPage, setCurrentPage] = useState<'main' | 'landing' | 'emotionLearning' | 'instruction'>('main');
+  const [currentPage, setCurrentPage] = useState<'main' | 'landing' | 'LearningStep1' | 'instruction'>('main');
 
   const handleNavigate = (page: string) => {
-    setCurrentPage(page as 'landing' | 'emotionLearning' | 'instruction'); 
+    setCurrentPage(page as 'landing' | 'LearningStep1' | 'instruction'); 
   };
 
   if (currentPage === 'main') {
     return <MainPage onNavigate={handleNavigate} />;
   } else if (currentPage === 'landing') {
     return <LandingPage />;
-  } else if (currentPage === 'emotionLearning') {
-    return <EmotionLearningPage />;
+  } else if (currentPage === 'LearningStep1') {
+    return <LearningStep1Page />;
   } else {
     return <InstructionPage />; 
   }
