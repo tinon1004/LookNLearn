@@ -1,3 +1,5 @@
+'use client';
+
 export type Emotion = 
   | '행복한, 좋은 표정' 
   | '짜증난, 싫은 표정' 

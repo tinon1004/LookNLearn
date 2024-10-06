@@ -1,16 +1,19 @@
+'use client';
+
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Emotion } from './EmotionData';
+import { useRouter, useSearchParams  } from 'next/navigation';
+import { Emotion } from '../step1/EmotionData';
 
 interface AnalysisResult {
   label: string;
   probability: number;
 }
 
-interface LearningStep2PageProps {
-    selectedEmotion: Emotion;
-  }
-
-export default function LearningStep2Page({ selectedEmotion }: LearningStep2PageProps) {
+export default function LearningStep2Page() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const emotion = searchParams.get('emotion') as Emotion;
+  
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -102,11 +105,15 @@ export default function LearningStep2Page({ selectedEmotion }: LearningStep2Page
     startWebcam();
   };
 
+  const MovePage = () => {
+    router.push('/main/step1');
+  };
+
   return (
     <div className="max-w-2xl mx-auto p-4">
       <div className="bg-white rounded-lg shadow-md p-6">
         <p className="text-xl mb-2">방금 선택한</p>
-        <p className="text-xl mb-2">{getEmoticonForEmotion(selectedEmotion)} {selectedEmotion}을 찍어 보세요!</p>
+        <p className="text-xl mb-2">{getEmoticonForEmotion(emotion)} {emotion}을 찍어 보세요!</p>
         <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden mb-4">
           {isCapturing && !imageSrc ? (
             <video
@@ -157,7 +164,10 @@ export default function LearningStep2Page({ selectedEmotion }: LearningStep2Page
       )}
       
       <div className="mt-4 flex justify-center">
-        <button className="bg-blue-500 text-white px-6 py-2 rounded-md w-1/2">
+        <button 
+          onClick={MovePage}
+          className="bg-blue-500 text-white px-6 py-2 rounded-md w-1/2"
+        >
           다음으로 이동하기
         </button>
       </div>
@@ -177,3 +187,4 @@ export default function LearningStep2Page({ selectedEmotion }: LearningStep2Page
     }
   }
 }
+

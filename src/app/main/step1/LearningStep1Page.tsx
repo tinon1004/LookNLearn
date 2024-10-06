@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
-import LearningStep2Page from './LearningStep2Page';
+import { useRouter } from 'next/navigation';
 import { 
   Emotion, 
   emotions, 
@@ -7,11 +9,9 @@ import {
   ImageData
 } from './EmotionData';
 
-interface LearningStep1PageProps {
-    onStart: (emotion: Emotion) => void;
-  }
 
-function LearningStep1Page({ onStart }: LearningStep1PageProps ) {
+export default function LearningStep1Page() {
+  const router = useRouter();
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const [currentImage, setCurrentImage] = useState<ImageData>(getRandomImage());
@@ -40,6 +40,12 @@ function LearningStep1Page({ onStart }: LearningStep1PageProps ) {
       ['감정을 이해하는 건', '쉽지 않아요.', '계속 노력해봐요!']
     ];
     return feedbackMessages[wrongAttempts % feedbackMessages.length];
+  };
+
+  const MovePage = () => {
+    if (selectedEmotion) {
+      router.push(`/main/step2?emotion=${encodeURIComponent(selectedEmotion)}`);
+    }
   };
 
   return (
@@ -94,7 +100,7 @@ function LearningStep1Page({ onStart }: LearningStep1PageProps ) {
       
         <div className="text-center mt-6">
             <button 
-              onClick={() => selectedEmotion && onStart(selectedEmotion)}
+              onClick={MovePage}
               disabled={!showNextButton}
               className={`bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold transition-colors ${showNextButton ? 'hover:bg-blue-600' : 'opacity-50 cursor-not-allowed'}`}
             >
@@ -121,20 +127,4 @@ function getEmoticonForEmotion(emotion: Emotion): string {
     case '덤덤한, 무표정': return '😐';
     default: return '❓';
   }
-}
-
-export default function MovePage() {
-  const [isStarted, setIsStarted] = useState(false);
-  const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
-
-  const handleStart = (emotion: Emotion) => {
-    setSelectedEmotion(emotion);
-    setIsStarted(true);
-  };
-
-  if (!isStarted) {
-    return <LearningStep1Page onStart={handleStart} />;
-  }
-
-  return selectedEmotion ? <LearningStep2Page selectedEmotion={selectedEmotion} /> : null;
 }

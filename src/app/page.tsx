@@ -1,10 +1,19 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import MainPage from './MainPage';
 
-function LandingPage({ onStart }: { onStart: () => void }) {
+
+export default function LandingPage() {
+ 
+  const router = useRouter();
+
+  const MovePage = () => {
+    router.push('/main');
+  };
+ 
+ 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="max-w-md w-full space-y-8 text-center">
@@ -24,44 +33,14 @@ function LandingPage({ onStart }: { onStart: () => void }) {
         
         <div className="space-y-4">
           <button
-            onClick={onStart}
+            onClick={MovePage}
             className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10"
           >
             시작하기
           </button>
         </div>
         
-        <div className="mt-6 grid grid-cols-3 gap-4">
-          <div className="text-center">
-            <div className="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white mx-auto">
-              1
-            </div>
-            <p className="mt-2 text-sm text-gray-500">웹캠 켜기</p>
-          </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white mx-auto">
-              2
-            </div>
-            <p className="mt-2 text-sm text-gray-500">사진 촬영</p>
-          </div>
-          <div className="text-center">
-            <div className="flex items-center justify-center h-12 w-12 rounded-md bg-indigo-500 text-white mx-auto">
-              3
-            </div>
-            <p className="mt-2 text-sm text-gray-500">결과 확인</p>
-          </div>
-        </div>
       </div>
     </div>
   );
-}
-
-export default function MovePage() {
-  const [isStarted, setIsStarted] = useState(false);
-
-  if (!isStarted) {
-    return <LandingPage onStart={() => setIsStarted(true)} />;
-  }
-
-  return <MainPage />;
 }
