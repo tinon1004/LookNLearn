@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Emotion, 
@@ -18,6 +18,18 @@ export default function LearningStep1Page() {
   const [currentImage, setCurrentImage] = useState<ImageData>(getRandomImage());
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
   const [wrongAttempts, setWrongAttempts] = useState(0);
+
+  useEffect(() => {
+    resetState();
+  }, []);
+
+  const resetState = () => {
+    setIsCorrect(null);
+    setShowNextButton(false);
+    setCurrentImage(getRandomImage());
+    setSelectedEmotion(null);
+    setWrongAttempts(0);
+  };
 
   const handleEmotionSelect = (emotion: Emotion) => {
     const correct = emotion === currentImage.correctEmotion;
