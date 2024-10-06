@@ -3,13 +3,14 @@ import LearningStep2Page from './LearningStep2Page';
 import { 
   Emotion, 
   emotions, 
-  getRandomImage
+  getRandomImage,
+  ImageData
 } from './EmotionData';
 
 function LearningStep1Page({ onStart }: { onStart: () => void }) {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showNextButton, setShowNextButton] = useState(false);
-  const currentImage = getRandomImage();
+  const [currentImage, setCurrentImage] = useState<ImageData>(getRandomImage());
 
   const handleEmotionSelect = (emotion: Emotion) => {
     const correct = emotion === currentImage.correctEmotion;
@@ -26,8 +27,7 @@ function LearningStep1Page({ onStart }: { onStart: () => void }) {
           className="w-full h-64 object-cover rounded-lg mb-4"
         />
         <p className="text-center text-gray-700 mb-6">
-          친구의 생일파티에 초대 되었고 친구가 생일 케이크를 불고 있습니다.
-          아래 중에 어떤 표정을 짓고 있을까요?
+            {currentImage.description}
         </p>
         <div className="grid grid-cols-4 gap-4 mb-6">
           {emotions.map((emotion) => (

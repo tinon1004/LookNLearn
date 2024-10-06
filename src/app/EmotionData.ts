@@ -10,6 +10,7 @@ export type Emotion =
 export interface ImageData {
   src: string;
   correctEmotion: Emotion;
+  description: string;
 }
 
 export const emotions: Emotion[] = [
@@ -26,15 +27,18 @@ export const emotions: Emotion[] = [
 export const imageData: ImageData[] = [
   {
     src: '/img/emotion/angry.png',
-    correctEmotion: '화난, 분노의 표정'
+    correctEmotion: '화난, 분노의 표정',
+    description: '친구와 말다툼을 하고 있습니다. 어떤 표정을 짓고 있을까요?'
   },
   {
     src: '/img/emotion/happy.png',
-    correctEmotion: '행복한, 좋은 표정'
+    correctEmotion: '행복한, 좋은 표정',
+    description: '친구의 생일파티에 초대 되었고 친구가 생일 케이크를 불고 있습니다. 어떤 표정을 짓고 있을까요?'
   },
   {
     src: '/img/emotion/sad.png',
-    correctEmotion: '슬픈, 우울한 표정'
+    correctEmotion: '슬픈, 우울한 표정',
+    description: '좋아하는 장난감이 망가졌습니다. 어떤 표정을 짓고 있을까요?'
   }
 ];
 
