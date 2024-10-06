@@ -19,7 +19,7 @@ export default function LearningStep1Page() {
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [learningCount, setLearningCount] = useState(0);
-
+  
   useEffect(() => {
     resetState();
     const count = localStorage.getItem('learningCount');
@@ -62,12 +62,7 @@ export default function LearningStep1Page() {
     if (selectedEmotion) {
       const newCount = learningCount + 1;
       localStorage.setItem('learningCount', newCount.toString());
-      if (newCount >= 4) {
-        localStorage.setItem('learningCount', '0');
-        router.push('/main/completion');
-      } else {
-        router.push(`/main/step2?emotion=${encodeURIComponent(selectedEmotion)}&count=${newCount}`);
-      }
+      router.push(`/main/step2?emotion=${encodeURIComponent(selectedEmotion)}&count=${newCount}`);
     }
   };
 
@@ -132,7 +127,7 @@ export default function LearningStep1Page() {
         </div>
         
         <div className="text-center text-gray-500 text-sm mt-4">
-          {learningCount + 1} / 4
+          {learningCount + 1}/ 4
         </div>
         </div>
     </div>
