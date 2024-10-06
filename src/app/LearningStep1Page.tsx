@@ -7,15 +7,23 @@ import {
   ImageData
 } from './EmotionData';
 
-function LearningStep1Page({ onStart }: { onStart: () => void }) {
+interface LearningStep1PageProps {
+    onStart: (emotion: Emotion) => void;
+  }
+
+function LearningStep1Page({ onStart }: LearningStep1PageProps ) {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const [currentImage, setCurrentImage] = useState<ImageData>(getRandomImage());
+  const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
 
   const handleEmotionSelect = (emotion: Emotion) => {
     const correct = emotion === currentImage.correctEmotion;
     setIsCorrect(correct);
     setShowNextButton(correct);
+    if (correct) {
+        setSelectedEmotion(emotion);
+      }
   };
 
   return (
@@ -56,7 +64,7 @@ function LearningStep1Page({ onStart }: { onStart: () => void }) {
       
         <div className="text-center mt-6">
             <button 
-              onClick={onStart}
+              onClick={() => selectedEmotion && onStart(selectedEmotion)}
               disabled={!showNextButton}
               className={`bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold transition-colors ${showNextButton ? 'hover:bg-blue-600' : 'opacity-50 cursor-not-allowed'}`}
             >
@@ -86,10 +94,16 @@ function getEmoticonForEmotion(emotion: Emotion): string {
 
 export default function MovePage() {
   const [isStarted, setIsStarted] = useState(false);
+  const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
+
+  const handleStart = (emotion: Emotion) => {
+    setSelectedEmotion(emotion);
+    setIsStarted(true);
+  };
 
   if (!isStarted) {
-    return <LearningStep1Page onStart={() => setIsStarted(true)} />;
+    return <LearningStep1Page onStart={handleStart} />;
   }
 
-  return <LearningStep2Page />;
+  return selectedEmotion ? <LearningStep2Page selectedEmotion={selectedEmotion} /> : null;
 }

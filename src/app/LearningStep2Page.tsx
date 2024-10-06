@@ -1,11 +1,16 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { Emotion } from './EmotionData';
 
 interface AnalysisResult {
   label: string;
   probability: number;
 }
 
-export default function LearningStep2Page() {
+interface LearningStep2PageProps {
+    selectedEmotion: Emotion;
+  }
+
+export default function LearningStep2Page({ selectedEmotion }: LearningStep2PageProps) {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -101,7 +106,7 @@ export default function LearningStep2Page() {
     <div className="max-w-2xl mx-auto p-4">
       <div className="bg-white rounded-lg shadow-md p-6">
         <p className="text-xl mb-2">방금 선택한</p>
-        <p className="text-xl mb-2">😊행복하게 웃는 표정을 찍어 보세요!</p>
+        <p className="text-xl mb-2">{getEmoticonForEmotion(selectedEmotion)} {selectedEmotion}을 찍어 보세요!</p>
         <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden mb-4">
           {isCapturing && !imageSrc ? (
             <video
@@ -158,4 +163,17 @@ export default function LearningStep2Page() {
       </div>
     </div>
   );
+
+  function getEmoticonForEmotion(emotion: Emotion): string {
+    switch (emotion) {
+      case '행복한, 좋은 표정': return '😄';
+      case '짜증난, 싫은 표정': return '😣';
+      case '두려운, 무서운 표정': return '😨';
+      case '화난, 분노의 표정': return '😠';
+      case '슬픈, 우울한 표정': return '😢';
+      case '놀란, 놀라는 표정': return '😲';
+      case '덤덤한, 무표정': return '😐';
+      default: return '❓';
+    }
+  }
 }
