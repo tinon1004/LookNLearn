@@ -40,6 +40,15 @@ function LearningStep1Page({ onStart }: { onStart: () => void }) {
               <span className="text-sm text-gray-700">{emotion}</span>
             </button>
           ))}
+
+            {isCorrect !== null && (
+                <div className={`flex flex-col items-center justify-center p-4 rounded-lg ${
+                    isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                }`}>
+                    <span className="text-3xl mb-2">{isCorrect ? '👏' : '💪'}</span>
+                    <span className="text-sm">{isCorrect ? '정답입니다!' : '다시 시도해보세요!'}</span>
+                </div>
+            )}
         </div>
        
       </div>
