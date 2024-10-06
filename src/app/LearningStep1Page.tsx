@@ -8,22 +8,13 @@ import {
 
 function LearningStep1Page({ onStart }: { onStart: () => void }) {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-  const [attempts, setAttempts] = useState(0);
   const [showNextButton, setShowNextButton] = useState(false);
   const currentImage = getRandomImage();
 
   const handleEmotionSelect = (emotion: Emotion) => {
     const correct = emotion === currentImage.correctEmotion;
     setIsCorrect(correct);
-    
-    if (!correct) {
-      setAttempts(prev => prev + 1);
-      if (attempts >= 2) {
-        setShowNextButton(true);
-      }
-    } else {
-      setShowNextButton(true);
-    }
+    setShowNextButton(correct);
   };
 
   return (
@@ -50,20 +41,23 @@ function LearningStep1Page({ onStart }: { onStart: () => void }) {
             </button>
           ))}
         </div>
-        {showNextButton && (
-          <div className="text-center">
+       
+      </div>
+
+      
+        <div className="text-center mt-6">
             <button 
               onClick={onStart}
-              className="bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+              disabled={!showNextButton}
+              className={`bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold transition-colors ${showNextButton ? 'hover:bg-blue-600' : 'opacity-50 cursor-not-allowed'}`}
             >
               다음으로 이동하기
             </button>
-          </div>
-        )}
+        </div>
+        
         <div className="text-center text-gray-500 text-sm mt-4">
           1 / 4
         </div>
-      </div>
     </div>
   );
 }
