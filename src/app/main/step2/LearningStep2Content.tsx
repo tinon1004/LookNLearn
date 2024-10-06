@@ -13,6 +13,7 @@ export default function LearningStep2Content() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const emotion = searchParams.get('emotion') as Emotion;
+  const count = parseInt(searchParams.get('count') || '0');
   
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
@@ -106,7 +107,12 @@ export default function LearningStep2Content() {
   };
 
   const MovePage = () => {
-    router.push('/main/step1');
+    if (count >= 4) {
+      localStorage.setItem('learningCount', '0');
+      router.push('/main/completion');
+    } else {
+      router.push('/main/step1');
+    }
   };
 
   return (
@@ -168,8 +174,12 @@ export default function LearningStep2Content() {
           onClick={MovePage}
           className="bg-blue-500 text-white px-6 py-2 rounded-md w-1/2"
         >
-          다음으로 이동하기
+          {count >= 4 ? '학습 완료' : '다음 감정으로 이동하기'}
         </button>
+      </div>
+
+      <div className="text-center text-gray-500 text-sm mt-4">
+        {count} / 4
       </div>
     </div>
   );
