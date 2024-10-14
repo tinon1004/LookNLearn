@@ -33,7 +33,7 @@ export const imageData: ImageData[] = [
     description: '친구와 말다툼을 하고 있습니다. 어떤 표정을 짓고 있을까요?'
   },
   {
-    src: '/img/emotion/happy.png',
+    src: '/img/emotion/happy1.png',
     correctEmotion: '행복한, 좋은 표정',
     description: '친구의 생일파티에 초대 되었고 친구가 생일 케이크를 불고 있습니다. 어떤 표정을 짓고 있을까요?'
   },

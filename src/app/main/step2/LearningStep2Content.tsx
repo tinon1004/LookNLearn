@@ -21,6 +21,7 @@ export default function LearningStep2Content() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [attemptCount, setAttemptCount] = useState<number>(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -96,15 +97,22 @@ export default function LearningStep2Content() {
           setError('이미지 업로드 중 오류가 발생했습니다.');
         } finally {
           setIsLoading(false);
+          setAttemptCount(prevCount => prevCount + 1);
         }
       }
     }
   }, []);
 
-  const retakePhoto = () => {
-    setImageSrc(null);
-    setResult(null);
-    startWebcam();
+  const handleCaptureClick = () => {
+    if (attemptCount < 2) {
+      if (imageSrc) {
+        setImageSrc(null);
+        setResult(null);
+        startWebcam();
+      } else {
+        captureAndUpload();
+      }
+    }
   };
 
   useEffect(() => {
@@ -146,20 +154,13 @@ export default function LearningStep2Content() {
             </div>
           )}
         </div>
-        <div className="flex justify-center space-x-4">
+        <div className="flex justify-center">
           <button
-            onClick={retakePhoto}
-            disabled={!imageSrc || isLoading}
-            className="bg-gray-300 text-gray-700 px-6 py-2 rounded-md disabled:opacity-50"
-          >
-            한 번 더 다시 찍기
-          </button>
-          <button
-            onClick={captureAndUpload}
-            disabled={isLoading || !!imageSrc}
+            onClick={handleCaptureClick}
+            disabled={isLoading || attemptCount >= 2}
             className="bg-blue-500 text-white px-6 py-2 rounded-md disabled:opacity-50"
           >
-            {isLoading ? '처리 중...' : '사진 찍기'}
+            {isLoading ? '처리 중...' : imageSrc ? '한 번 더 찍기' : '사진 찍기'}
           </button>
         </div>
       </div>
