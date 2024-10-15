@@ -121,7 +121,7 @@ export default function LearningStep2Content() {
   }, []);
 
   const MovePage = () => {
-    if (count === 4 && isFirstCompletion) {
+    if (count === 5 && isFirstCompletion) {
       localStorage.setItem('isFirstCompletion', 'false');
       router.push('/main/completion');
     } else {
@@ -181,12 +181,12 @@ export default function LearningStep2Content() {
           onClick={MovePage}
           className="bg-blue-500 text-white px-6 py-2 rounded-md w-1/2"
         >
-          {count === 4 && isFirstCompletion ? '학습 완료' : '다음 감정으로 이동하기'}
+          {count === 5 && isFirstCompletion ? '학습 완료' : '다음 감정으로 이동하기'}
         </button>
       </div>
 
       <div className="text-center text-gray-500 text-sm mt-4">
-        {count}/ 4
+        {count}/ 5
       </div>
     </div>
   );

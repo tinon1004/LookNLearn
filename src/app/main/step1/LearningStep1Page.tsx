@@ -127,7 +127,7 @@ export default function LearningStep1Page() {
         </div>
         
         <div className="text-center text-gray-500 text-sm mt-4">
-          {learningCount + 1}/ 4
+          {learningCount + 1}/ 5
         </div>
         </div>
     </div>
