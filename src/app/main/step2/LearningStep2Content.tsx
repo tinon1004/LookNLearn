@@ -22,6 +22,7 @@ export default function LearningStep2Content() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [attemptCount, setAttemptCount] = useState<number>(0);
+  const [isPhotoCaptured, setIsPhotoCaptured] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -92,6 +93,7 @@ export default function LearningStep2Content() {
 
           const analysisResult = await uploadResponse.json();
           setResult(analysisResult);
+          setIsPhotoCaptured(true);
         } catch (err) {
           console.error('업로드 오류:', err);
           setError('이미지 업로드 중 오류가 발생했습니다.');
@@ -108,6 +110,7 @@ export default function LearningStep2Content() {
       if (imageSrc) {
         setImageSrc(null);
         setResult(null);
+        setIsPhotoCaptured(false);
         startWebcam();
       } else {
         captureAndUpload();
@@ -179,7 +182,8 @@ export default function LearningStep2Content() {
       <div className="mt-4 flex justify-center">
         <button 
           onClick={MovePage}
-          className="bg-blue-500 text-white px-6 py-2 rounded-md w-1/2"
+          disabled={!isPhotoCaptured}
+          className="bg-blue-500 text-white px-6 py-2 rounded-md w-1/2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {count === 5 && isFirstCompletion ? '학습 완료' : '다음 감정으로 이동하기'}
         </button>
