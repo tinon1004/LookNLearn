@@ -20,7 +20,7 @@ export default function LearningStep2Content() {
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [results, setResults] = useState<AnalysisResult[]>([]);
   const [attemptCount, setAttemptCount] = useState<number>(0);
   const [isPhotoCaptured, setIsPhotoCaptured] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -91,8 +91,9 @@ export default function LearningStep2Content() {
             throw new Error('업로드 실패');
           }
 
-          const analysisResult = await uploadResponse.json();
-          setResult(analysisResult);
+          const analysisResults: AnalysisResult[] = await uploadResponse.json();
+          const sortedResults = analysisResults.sort((a, b) => b.probability - a.probability);
+          setResults(sortedResults.slice(0, 3));
           setIsPhotoCaptured(true);
         } catch (err) {
           console.error('업로드 오류:', err);
@@ -109,7 +110,7 @@ export default function LearningStep2Content() {
     if (attemptCount < 2) {
       if (imageSrc) {
         setImageSrc(null);
-        setResult(null);
+        setResults([]);
         setIsPhotoCaptured(false);
         startWebcam();
       } else {
@@ -169,13 +170,15 @@ export default function LearningStep2Content() {
       </div>
       
       {error && <p className="text-red-500 text-center my-4">{error}</p>}
-      {result && (
+      {results.length > 0 && (
         <div className="bg-gray-100 p-4 rounded-lg my-4">
-          <h2 className="text-lg font-semibold mb-2">표정 분석 결과:</h2>
-          <div className="flex justify-between items-center">
-            <p><strong>감정:</strong> {result.label}</p>
-            <p><strong>정확도:</strong> {(result.probability * 100).toFixed(2)}%</p>
-          </div>
+          <h2 className="text-lg font-semibold mb-2">표정 분석 결과 (Top 3):</h2>
+          {results.map((result, index) => (
+            <div key={index} className="flex justify-between items-center mb-2">
+              <p><strong>감정:</strong> {result.label}</p>
+              <p><strong>정확도:</strong> {(result.probability * 100).toFixed(2)}%</p>
+            </div>
+          ))}
         </div>
       )}
       
