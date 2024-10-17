@@ -29,6 +29,16 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-4 w-full max-w-2xl">
+      <style jsx>{`
+        @keyframes blink {
+          0% { background-color: #60A5FA; }
+          50% { background-color: #2563EB; }
+          100% { background-color: #60A5FA; }
+        }
+        .blink-animation {
+          animation: blink 2s infinite;
+        }
+      `}</style>
       <div className="flex justify-between items-center mb-4">
         <div className="flex flex-col items-start">
           <h2 className="text-l font-bold">
@@ -63,7 +73,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
             key={day}
             onClick={() => handleDayClick(day)}
             className={`aspect-square flex items-center justify-center p-2 rounded-lg transition-colors border border-gray-200
-              ${isToday(day) ? 'bg-blue-400 text-white hover:bg-blue-200' : ''}`}
+              ${isToday(day) ? 'text-white blink-animation' : ''}`}
           >
             {day}
           </button>
@@ -73,9 +83,9 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   );
 };
 
+
 const MainPage: React.FC = () => {
   const router = useRouter();
-
   const handleNavigation = (path: string): void => {
     router.push(path);
   };
@@ -84,9 +94,7 @@ const MainPage: React.FC = () => {
     const today = new Date();
     if (year === today.getFullYear() && month === today.getMonth() + 1 && day === today.getDate()) {
       handleNavigation('/main/step1');
-    } else {
-      handleNavigation(`/main/learn/${year}/${month}/${day}`);
-    }
+    } 
   };
 
   return (
