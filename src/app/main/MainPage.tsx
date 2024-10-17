@@ -50,11 +50,11 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
         </div>
         <div className="flex">
           <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}
-                  className="mx-1 px-3 py-1 bg-gray-200 rounded-full text-gray-600 hover:bg-gray-300">
+                  className="mx-1 px-3 py-1 text-gray-600 ">
             &lt;
           </button>
           <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}
-                  className="mx-1 px-3 py-1 bg-gray-200 rounded-full text-gray-600 hover:bg-gray-300">
+                  className="mx-1 px-3 py-1 text-gray-600 ">
             &gt;
           </button>
         </div>
