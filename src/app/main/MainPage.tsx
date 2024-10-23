@@ -28,7 +28,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
     day === today.getDate();
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4 w-full max-w-2xl">
+    <div className="bg-white rounded-xl shadow-lg p-4 w-full max-w-2xl">
       <style jsx>{`
         @keyframes blink {
           0% { background-color: #60A5FA; }
@@ -58,21 +58,27 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
             &gt;
           </button>
         </div>
-      </div>
-      <div className="grid grid-cols-7 border-t border-l border-gray-200">
+      </div> 
+
+      <div className="grid grid-cols-7">
         {weekdays.map(day => (
-          <div key={day} className="text-center font-semibold text-gray-600 py-1 border-r border-b border-gray-200">
-            {day}
-          </div>
-        ))}
+            <div key={day} className="text-gray-600 py-1 border-b-2 text-sm pl-2">
+              {day}
+            </div>
+          ))}
+      </div>
+      
+
+      <div className="grid grid-cols-7 border-l-2 border-gray-200">
+       
         {Array(firstDayOfMonth).fill(null).map((_, index) => (
-          <div key={`empty-${index}`} className="aspect-square border-r border-b border-gray-200" />
+          <div key={`empty-${index}`} className="aspect-square border-r-2 border-b-2 border-gray-200" />
         ))}
         {days.map(day => (
           <button
             key={day}
             onClick={() => handleDayClick(day)}
-            className={`relative aspect-square border-r border-b border-gray-200
+            className={`relative aspect-square border-r-2 border-b-2 border-gray-200
               ${isToday(day) ? 'text-white blink-animation' : ''}`}
           >
             <div className="absolute top-2 left-2 text-sm">
