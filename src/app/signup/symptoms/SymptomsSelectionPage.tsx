@@ -14,7 +14,7 @@ export default function SymptomsSelectionPage() {
   const [isOpen, setIsOpen] = useState(false);
 
   const symptoms: SymptomType[] = [
-    { id: 1, text: "눈 맞추기, 얼굴 표정, 제스처 사용이 적절하지 않거나 반드가 적다" },
+    { id: 1, text: "관련 증상이 없다" },
     { id: 2, text: "발달 수준에 적합한 또래 관계를 형성하지 못한다" },
     { id: 3, text: "자발적으로 다른 사람과 즐거움이나 관심을 함께 나누고 싶어 하지 않는다" },
     { id: 4, text: "정서적 상호작용이 부족하다" },
@@ -24,7 +24,8 @@ export default function SymptomsSelectionPage() {
     { id: 8, text: "외관상 특특하다" },
     { id: 9, text: "비기능적인 일이나 관습에 변함없이 집착한다" },
     { id: 10, text: "상동적이고 반복적인 운동 양식(손이나 손가락을 꼬는 등)을 보인다" },
-    { id: 11, text: "물건의 어떤 부분에 대해 지속적으로 집착한다" }
+    { id: 11, text: "물건의 어떤 부분에 대해 지속적으로 집착한다" },
+    { id: 12, text: "눈 맞추기, 얼굴 표정, 제스처 사용이 적절하지 않거나 빈도가 적다" }
   ];
 
   const handleSymptomToggle = (symptomText: string) => {
@@ -42,7 +43,7 @@ export default function SymptomsSelectionPage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      <div className="w-full max-w-md space-y-8">
+      <div className="w-full max-w-md space-y-8 pb-20">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900">증상 체크리스트</h1>
           <p className="mt-2 text-gray-600">해당되는 증상을 모두 선택해주세요</p>
@@ -50,6 +51,7 @@ export default function SymptomsSelectionPage() {
 
         <div className="w-full space-y-4">
           <div className="relative">
+            <p className="text-center mb-1" >증상을 모두 선택 후 👇 아래의 버튼을 다시 클릭하세요</p>
             <button
               type="button"
               onClick={() => setIsOpen(!isOpen)}
