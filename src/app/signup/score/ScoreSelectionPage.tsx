@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-type IQStatus = 'slider' | 'unknown' | 'notApplicable';
+type IQStatus = 'slider' | 'unknown';
 
 interface IQData {
   iq: number | null;
@@ -29,6 +29,11 @@ export default function ScoreSelectionPage() {
     console.log('IQ 데이터:', formData);
     router.push('/signup/symptoms');
   };
+
+  const calculateIQProgress = (value: number) => {
+    return ((value - 50) / (150 - 50)) * 100;
+  };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
@@ -61,7 +66,7 @@ export default function ScoreSelectionPage() {
                 className="w-4 h-4 text-[#9EBCDF] focus:ring-[#9EBCDF]"
               />
               <label htmlFor="unknown" className="text-sm">
-                잘 모름
+                잘 알지 못함
               </label>
             </div>
           </div>
@@ -78,12 +83,16 @@ export default function ScoreSelectionPage() {
                 type="range"
                 min="50"
                 max="150"
+                step="1"
                 value={formData.iq || 71}
                 onChange={(e) => setFormData(prev => ({
                   ...prev,
                   iq: Number(e.target.value)
                 }))}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                style={{
+                    background: `linear-gradient(to right, #9EBCDF 0%, #9EBCDF ${calculateIQProgress(formData.iq || 71)}%, #E5E7EB ${calculateIQProgress(formData.iq || 71)}%, #E5E7EB 100%)`
+                  }}
               />
               
               <div className="text-center">
