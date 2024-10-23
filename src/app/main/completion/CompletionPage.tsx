@@ -26,13 +26,13 @@ export default function LearningCompletionPage() {
         <div className="space-y-4">
           <button
             onClick={handleContinueLearning}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full transition duration-300"
+            className="bg-[#9EBCDF] hover:bg-[#8BAACE] text-white font-bold py-2 px-4 rounded w-full transition duration-300"
           >
             이어서 계속 학습하기
           </button>
           <button
             onClick={handleGoToMainPage}
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded w-full transition duration-300"
+            className="bg-[#9EBCDF] hover:bg-[#8BAACE] text-white font-bold py-2 px-4 rounded w-full transition duration-300"
           >
             메인 페이지로 이동하기
           </button>

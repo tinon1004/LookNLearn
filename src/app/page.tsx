@@ -54,7 +54,7 @@ export default function LandingPage() {
 
           <button
             onClick={MovePage}
-            className="w-60 px-3 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            className="w-60 px-3 py-2 border border-transparent text-base font-medium rounded-md text-white bg-[#9EBCDF] hover:bg-[#8BAACE] transition duration-300"
           >
             로그인
           </button>
