@@ -159,13 +159,13 @@ export default function ScoreSelectionPage() {
                         className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
                         >
                         <span className="text-sm text-gray-600">
-                            {formData.iqFile ? formData.iqFile.name : '인증서 첨부하기'}
+                            {formData.iqFile ? '인증서 첨부 완료' : '인증서 첨부하기'}
                         </span>
                     </label>
                         {formData.iqFile && (
                             <button
                             onClick={() => setFormData(prev => ({ ...prev, iqFile: null }))}
-                            className="text-sm text-red-500 hover:text-red-600"
+                            className="ml-2 text-sm text-red-500 hover:text-red-600"
                             >
                             삭제
                             </button>
@@ -261,13 +261,13 @@ export default function ScoreSelectionPage() {
                     className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
                 >
                     <span className="text-sm text-gray-600">
-                    {formData.gasFile ? formData.gasFile.name : '인증서 첨부하기'}
+                    {formData.gasFile ? '인증서 첨부 완료' : '인증서 첨부하기'}
                     </span>
                 </label>
                 {formData.gasFile && (
                     <button
                     onClick={() => setFormData(prev => ({ ...prev, gasFile: null }))}
-                    className="text-sm text-red-500 hover:text-red-600"
+                    className="ml-2 text-sm text-red-500 hover:text-red-600 flex-shrink-0"
                     >
                     삭제
                     </button>
