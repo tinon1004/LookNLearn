@@ -13,6 +13,15 @@ interface SignUpData {
 
 export default function SignUpPage() {
     const router = useRouter();
+
+    const MoveToLogin = () => {
+        router.push('/');
+      };
+    
+    const MoveToCompletion = () => {
+        router.push('/signup/completion');
+    };
+     
     const [formData, setFormData] = useState<SignUpData>({
       name: '',
       birthDate: '',
@@ -82,6 +91,7 @@ export default function SignUpPage() {
   
             <button
               type="submit"
+              onClick={MoveToCompletion}
               className="w-60 px-3 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
             >
               가입하기
@@ -89,7 +99,7 @@ export default function SignUpPage() {
   
             <button
               type="button"
-              onClick={() => router.push('/')}
+              onClick={MoveToLogin}
               className="text-gray-600 hover:text-gray-800 text-sm font-medium"
             >
               이미 계정이 있으신가요? 로그인하기
