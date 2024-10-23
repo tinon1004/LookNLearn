@@ -12,9 +12,9 @@ export default function LandingPage() {
     router.push('/main');
   };
 
-  // const MoveToSignup = () => {
-  //   router.push('/signup');
-  // };
+  const MoveToSignup = () => {
+    router.push('/signup');
+  };
  
  
   return (
@@ -46,7 +46,7 @@ export default function LandingPage() {
           />
 
           <button
-            // onClick={MoveToSignup}
+            onClick={MoveToSignup}
             className="text-gray-600 hover:text-gray-800 text-sm font-medium"
           >
             회원가입 하기
