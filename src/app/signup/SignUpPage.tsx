@@ -18,8 +18,8 @@ export default function SignUpPage() {
         router.push('/');
       };
     
-    const MoveToCompletion = () => {
-        router.push('/signup/completion');
+    const MoveToScore = () => {
+        router.push('/signup/score');
     };
      
     const [formData, setFormData] = useState<SignUpData>({
@@ -91,10 +91,10 @@ export default function SignUpPage() {
   
             <button
               type="submit"
-              onClick={MoveToCompletion}
+              onClick={MoveToScore}
               className="w-60 px-3 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
             >
-              가입하기
+              다음으로 이동하기
             </button>
   
             <button
