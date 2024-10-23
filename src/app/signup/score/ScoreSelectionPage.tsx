@@ -145,34 +145,36 @@ export default function ScoreSelectionPage() {
                 </p>
             )}
 
-            <div className="mt-4 space-y-2">
-                <div className="flex">
-                    <input
-                        type="file"
-                        id="iqFile"
-                        onChange={handleIQFileChange}
-                        accept=".pdf,.jpg,.jpeg,.png"
-                        className="hidden"
-                    />
-                    <label
-                        htmlFor="iqFile"
-                        className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+            {formData.iqStatus === 'slider' && (
+                <div className="mt-4 space-y-2">
+                    <div className="flex">
+                        <input
+                            type="file"
+                            id="iqFile"
+                            onChange={handleIQFileChange}
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            className="hidden"
+                        />
+                        <label
+                            htmlFor="iqFile"
+                            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
                         >
-                        <span className="text-sm text-gray-600">
-                            {formData.iqFile ? '인증서 첨부 완료' : '인증서 첨부하기'}
-                        </span>
-                    </label>
+                            <span className="text-sm text-gray-600">
+                                {formData.iqFile ? '인증서 첨부 완료' : '인증서 첨부하기'}
+                            </span>
+                        </label>
                         {formData.iqFile && (
                             <button
-                            onClick={() => setFormData(prev => ({ ...prev, iqFile: null }))}
-                            className="ml-2 text-sm text-red-500 hover:text-red-600"
+                                onClick={() => setFormData(prev => ({ ...prev, iqFile: null }))}
+                                className="ml-2 text-sm text-red-500 hover:text-red-600"
                             >
-                            삭제
+                                삭제
                             </button>
                         )}
-                        </div>
-                        <p className="text-xs text-gray-500">PDF, JPG, JPEG, PNG 파일 (최대 5MB)</p>
-             </div>
+                    </div>
+                    <p className="text-xs text-gray-500">PDF, JPG, JPEG, PNG 파일 (최대 5MB)</p>
+                </div>
+             )}
 
         </div>
 
@@ -246,35 +248,36 @@ export default function ScoreSelectionPage() {
                 정확한 GAS 점수를 모르는 것으로 기록됩니다.
                 </p>
             )}
-
-            <div className="mt-4 space-y-2">
-                <div className="flex">
-                <input
-                    type="file"
-                    id="gasFile"
-                    onChange={handleGASFileChange}
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    className="hidden"
-                />
-                <label
-                    htmlFor="gasFile"
-                    className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
-                >
-                    <span className="text-sm text-gray-600">
-                    {formData.gasFile ? '인증서 첨부 완료' : '인증서 첨부하기'}
-                    </span>
-                </label>
-                {formData.gasFile && (
-                    <button
-                    onClick={() => setFormData(prev => ({ ...prev, gasFile: null }))}
-                    className="ml-2 text-sm text-red-500 hover:text-red-600 flex-shrink-0"
-                    >
-                    삭제
-                    </button>
-                )}
+            {formData.iqStatus === 'slider' && (
+                <div className="mt-4 space-y-2">
+                    <div className="flex">
+                        <input
+                            type="file"
+                            id="gasFile"
+                            onChange={handleGASFileChange}
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            className="hidden"
+                        />
+                        <label
+                            htmlFor="gasFile"
+                            className="flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+                        >
+                            <span className="text-sm text-gray-600">
+                            {formData.gasFile ? '인증서 첨부 완료' : '인증서 첨부하기'}
+                            </span>
+                        </label>
+                        {formData.gasFile && (
+                            <button
+                            onClick={() => setFormData(prev => ({ ...prev, gasFile: null }))}
+                            className="ml-2 text-sm text-red-500 hover:text-red-600 flex-shrink-0"
+                            >
+                            삭제
+                            </button>
+                        )}
+                    </div>
+                    <p className="text-xs text-gray-500">PDF, JPG, JPEG, PNG 파일 (최대 5MB)</p>
                 </div>
-                <p className="text-xs text-gray-500">PDF, JPG, JPEG, PNG 파일 (최대 5MB)</p>
-          </div>
+            )}
 
         </div>
 
