@@ -248,7 +248,8 @@ export default function ScoreSelectionPage() {
                 정확한 GAS 점수를 모르는 것으로 기록됩니다.
                 </p>
             )}
-            {formData.iqStatus === 'slider' && (
+
+            {formData.gasStatus === 'slider' && (
                 <div className="mt-4 space-y-2">
                     <div className="flex">
                         <input
