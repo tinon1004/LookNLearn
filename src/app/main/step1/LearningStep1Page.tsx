@@ -73,7 +73,7 @@ export default function LearningStep1Page() {
                 <img 
                     src={currentImage.src} 
                     alt="감정 표현" 
-                    className="w-full h-64 object-cover rounded-lg mb-4"
+                    className="w-full h-full object-cover rounded-lg mb-4"
                 />
                 <p className="text-center text-gray-700">
                     {currentImage.description}
