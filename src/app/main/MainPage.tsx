@@ -16,7 +16,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
 
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+  const weekdays = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 
   const handleDayClick = (day: number) => {
     onDayClick(day, currentDate.getFullYear(), currentDate.getMonth() + 1);
@@ -39,9 +39,9 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
           animation: blink 2s infinite;
         }
       `}</style>
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-start mb-2">
         <div className="flex flex-col items-start">
-          <h2 className="text-l font-bold">
+          <h2 className="text-sm text-black-600">
             {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
           </h2>
           <h2 className="text-xl font-bold">
@@ -59,23 +59,25 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7 border-t border-l border-gray-200">
         {weekdays.map(day => (
-          <div key={day} className="text-center font-semibold text-gray-600 py-2">
+          <div key={day} className="text-center font-semibold text-gray-600 py-1 border-r border-b border-gray-200">
             {day}
           </div>
         ))}
         {Array(firstDayOfMonth).fill(null).map((_, index) => (
-          <div key={`empty-${index}`} className="aspect-square" />
+          <div key={`empty-${index}`} className="aspect-square border-r border-b border-gray-200" />
         ))}
         {days.map(day => (
           <button
             key={day}
             onClick={() => handleDayClick(day)}
-            className={`aspect-square flex items-center justify-center p-2 rounded-lg transition-colors border border-gray-200
+            className={`relative aspect-square border-r border-b border-gray-200
               ${isToday(day) ? 'text-white blink-animation' : ''}`}
           >
-            {day}
+            <div className="absolute top-2 left-2 text-sm">
+              {day}
+            </div>
           </button>
         ))}
       </div>

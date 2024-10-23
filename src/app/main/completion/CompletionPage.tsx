@@ -21,7 +21,7 @@ export default function LearningCompletionPage() {
         <h1 className="text-3xl font-bold mb-4">학습 완료!</h1>
         <div className="text-6xl mb-6">🎉</div>
         <p className="text-xl mb-8">
-          축하합니다! 4단계의 학습을 모두 완료하셨습니다.
+          축하합니다! 5단계의 학습을 모두 완료하셨습니다.
         </p>
         <div className="space-y-4">
           <button
