@@ -92,7 +92,7 @@ export default function SignUpPage() {
             <button
               type="submit"
               onClick={MoveToScore}
-              className="w-60 px-3 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+              className="w-60 px-3 py-2 border border-transparent text-base font-medium rounded-md text-white bg-[#9EBCDF] hover:bg-[#8BAACE]"
             >
               다음으로 이동하기
             </button>

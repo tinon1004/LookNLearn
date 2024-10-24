@@ -18,7 +18,7 @@ export default function SignUpCompletionPage() {
         <h2 className="text-xl font-bold">
           Look and Learn의
         </h2>
-        <h2 className="text-xl mb-8">
+        <h2 className="text-xl font-bold mb-8">
           가족이 되신 것을 축하합니다!
         </h2>
         <div className="space-y-4">
