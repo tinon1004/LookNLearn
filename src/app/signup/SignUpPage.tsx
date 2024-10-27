@@ -40,6 +40,7 @@ export default function SignUpPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
+      MoveToScore();
     };
   
   
@@ -136,7 +137,6 @@ export default function SignUpPage() {
 
           <button
             type="submit"
-            onChange={MoveToScore}
             className="w-full py-2 px-4 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 mt-6"
           >
             다음
