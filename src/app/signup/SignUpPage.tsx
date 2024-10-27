@@ -1,8 +1,8 @@
 'use client';
 
-
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface SignUpData {
   name: string;
@@ -48,12 +48,13 @@ export default function SignUpPage() {
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
         <div className="w-full max-w-md space-y-6">
 
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#7BA4D9]">
-            Look
-            <br />
-            and Learn
-          </h1>
+        <div className="mx-auto h-40 w-60 relative">
+          <Image
+            src="/img/Logo.png" 
+            alt="Logo"
+            fill
+            className="object-contain"
+          />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -114,7 +115,7 @@ export default function SignUpPage() {
             <input
               type="password"
               name="passwordConfirm"
-              placeholder="비밀번호를 한번 더 입력해 주세요."
+              placeholder="비밀번호를 한 번 더 입력해 주세요."
               value={formData.passwordConfirm}
               onChange={handleInputChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#7BA4D9]"
