@@ -6,17 +6,15 @@ import { useState } from 'react';
 
 interface SignUpData {
   name: string;
+  email: string;
   birthDate: string;
-  userId: string;
   password: string;
+  passwordConfirm: string;
+  termsAccepted: boolean;
 }
 
 export default function SignUpPage() {
     const router = useRouter();
-
-    const MoveToLogin = () => {
-        router.push('/');
-      };
     
     const MoveToScore = () => {
         router.push('/signup/score');
@@ -24,87 +22,126 @@ export default function SignUpPage() {
      
     const [formData, setFormData] = useState<SignUpData>({
       name: '',
+      email: '',
       birthDate: '',
-      userId: '',
       password: '',
+      passwordConfirm: '',
+      termsAccepted: false
     });
 
   
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = e.target;
+      const { name, value, type, checked } = e.target;
       setFormData(prev => ({
         ...prev,
-        [name]: value
+        [name]: type === 'checkbox' ? checked : value
       }));
     };
+
+    const handleSubmit = (e: React.FormEvent) => {
+      e.preventDefault();
+    };
+  
   
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-        <div className="w-full max-w-md space-y-8 text-center">
-  
-          <div className="text-center">
-            <h2 className="text-xl font-bold text-gray-900">
-                Look and Learn의 
-            </h2>
-            <h2 className="text-xl font-bold text-gray-900">
-                회원이 되어주세요!😉
-            </h2>
-          </div>
-  
-          <form className="flex flex-col items-center space-y-4">
+        <div className="w-full max-w-md space-y-6">
+
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-[#7BA4D9]">
+            Look
+            <br />
+            and Learn
+          </h1>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">이름</label>
             <input
               type="text"
               name="name"
-              placeholder="이름을 입력해 주세요"
+              placeholder="이름 (예시) 신이름"
               value={formData.name}
               onChange={handleInputChange}
-              className="w-60 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#7BA4D9]"
             />
+          </div>
+
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">아이디</label>
             <input
-              type="date"
-              name="birthDate"
-              placeholder="생년월일"
-              value={formData.birthDate}
+              type="email"
+              name="email"
+              placeholder="이메일 입력 (예시) ajou@gmail.com"
+              value={formData.email}
               onChange={handleInputChange}
-              className="w-60 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#7BA4D9]"
             />
+          </div>
+
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">생년월일</label>
             <input
               type="text"
-              name="userId"
-              placeholder="아이디를 입력해 주세요"
-              value={formData.userId}
+              name="birthDate"
+              placeholder="8자 입력 (예시) 20240101"
+              value={formData.birthDate}
               onChange={handleInputChange}
-              className="w-60 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#7BA4D9]"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">비밀번호</label>
             <input
               type="password"
               name="password"
-              placeholder="비밀번호를 입력해 주세요"
+              placeholder="비밀번호를 입력해 주세요."
               value={formData.password}
               onChange={handleInputChange}
-              className="w-60 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#7BA4D9]"
             />
-  
-            <button
-              type="submit"
-              onClick={MoveToScore}
-              className="w-60 px-3 py-2 border border-transparent text-base font-medium rounded-md text-white bg-[#9EBCDF] hover:bg-[#8BAACE]"
-            >
-              다음으로 이동하기
-            </button>
-  
-            <button
-              type="button"
-              onClick={MoveToLogin}
-              className="text-gray-600 hover:text-gray-800 text-sm font-medium"
-            >
-              이미 계정이 있으신가요? 로그인하기
-            </button>
-          </form>
+          </div>
+
+        
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">비밀번호 확인</label>
+            <input
+              type="password"
+              name="passwordConfirm"
+              placeholder="비밀번호를 한번 더 입력해 주세요."
+              value={formData.passwordConfirm}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#7BA4D9]"
+            />
+          </div>
+
+         
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="termsAccepted"
+              checked={formData.termsAccepted}
+              onChange={handleInputChange}
+              className="h-4 w-4 text-[#7BA4D9] focus:ring-[#7BA4D9] border-gray-300 rounded"
+            />
+            <label className="ml-2 text-sm text-gray-600">
+              개인정보 수집 및 이용 동의
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            onChange={MoveToScore}
+            className="w-full py-2 px-4 bg-gray-200 text-gray-600 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 mt-6"
+          >
+            다음
+          </button>
+        </form>
         </div>
       </div>
     );
