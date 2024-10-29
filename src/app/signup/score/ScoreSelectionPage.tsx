@@ -86,10 +86,16 @@ export default function ScoreSelectionPage() {
           <div>
             <label
                 htmlFor="file-upload"
-                className="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+                className="block w-full px-4 py-2 border-2 border-[#525C66] rounded-md shadow-sm text-sm text-gray-700 hover:bg-gray-50 cursor-pointer"
               >
                 <div className="flex items-center space-x-2">
-                  {/* <Upload size={16} className="text-gray-500" /> */}
+                  <Image 
+                    src="/icons/upload.png"
+                    alt="Upload icon"
+                    width={16}
+                    height={16}
+                    className="text-gray-500"
+                  />
                   <span>인증 자료 업로드</span>
                 </div>
               </label>
@@ -111,7 +117,7 @@ export default function ScoreSelectionPage() {
               onChange={(e) => setFormData(prev => ({ ...prev, isChecked: e.target.checked }))}
               className="h-4 w-4 text-[#4A90E2] focus:ring-[#4A90E2] border-gray-300 rounded"
             />
-            <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
+            <label htmlFor="terms" className="ml-2 text-sm text-gray-600 ">
               IQ, GAS 정보 수집 및 이용 동의
             </label>
           </div>
