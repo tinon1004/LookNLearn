@@ -45,19 +45,37 @@ export default function LandingPage() {
             className="w-60 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
-          <button
-            onClick={MoveToSignup}
-            className="text-gray-600 hover:text-gray-800 text-sm font-medium"
-          >
-            회원가입 하기
-          </button>
+          
 
           <button
             onClick={MovePage}
-            className="w-60 px-3 py-2 border border-transparent text-base font-medium rounded-md text-white bg-[#9EBCDF] hover:bg-[#8BAACE] transition duration-300"
+            className="w-60 px-3 py-2 border border-transparent text-base font-medium rounded-md text-white bg-[#2F8EFF] hover:bg-[#8BAACE] transition duration-300"
           >
             로그인
           </button>
+
+          <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+            <button
+              onClick={MoveToSignup}
+              className="hover:text-gray-800"
+            >
+              회원가입
+            </button>
+            <span className="text-gray-300">|</span>
+            <button
+              // onClick={MoveToFindId}
+              className="hover:text-gray-800"
+            >
+              아이디 찾기
+            </button>
+            <span className="text-gray-300">|</span>
+            <button
+              // onClick={MoveToFindPassword}
+              className="hover:text-gray-800"
+            >
+              비밀번호 찾기
+            </button>
+          </div>
 
         </div>
 
