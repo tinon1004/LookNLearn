@@ -11,12 +11,13 @@ type CalendarProps = {
 
 const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isFirstCompletion, setIsFirstCompletion] = useState<boolean>(false);
   const [randomStickerNumber, setRandomStickerNumber] = useState<number>(1);
   const today = new Date();
 
   useEffect(() => {
+    const storedCompletion = localStorage.getItem('isFirstCompletion');
+    setIsFirstCompletion(storedCompletion === 'true');
     const randomNumber = Math.floor(Math.random() * 4) + 1; 
     setRandomStickerNumber(randomNumber);
   }, []); 
