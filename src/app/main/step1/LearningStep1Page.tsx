@@ -22,9 +22,22 @@ export default function LearningStep1Page() {
   
   useEffect(() => {
     resetState();
-    const count = localStorage.getItem('learningCount');
-    setLearningCount(count ? parseInt(count) : 0);
+    initializeLearningCount();
   }, []);
+
+  const initializeLearningCount = () => {
+    const lastResetDate = localStorage.getItem('lastResetDate');
+    const today = new Date().toDateString();
+    const count = localStorage.getItem('learningCount');
+
+    if (lastResetDate !== today) {
+      localStorage.setItem('learningCount', '0');
+      localStorage.setItem('lastResetDate', today);
+      setLearningCount(0);
+    } else {
+      setLearningCount(count ? parseInt(count) : 0);
+    }
+  };
 
   const resetState = () => {
     setIsCorrect(null);

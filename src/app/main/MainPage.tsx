@@ -17,7 +17,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
 
   useEffect(() => {
     const storedCompletion = localStorage.getItem('isFirstCompletion');
-    setIsFirstCompletion(storedCompletion === 'true');
+    setIsFirstCompletion(storedCompletion === 'false');
     const randomNumber = Math.floor(Math.random() * 4) + 1; 
     setRandomStickerNumber(randomNumber);
   }, []); 
