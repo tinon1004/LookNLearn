@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -11,8 +11,15 @@ type CalendarProps = {
 
 const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
+   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isFirstCompletion, setIsFirstCompletion] = useState<boolean>(false);
+  const [randomStickerNumber, setRandomStickerNumber] = useState<number>(1);
   const today = new Date();
+
+  useEffect(() => {
+    const randomNumber = Math.floor(Math.random() * 4) + 1; 
+    setRandomStickerNumber(randomNumber);
+  }, []); 
 
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
@@ -88,7 +95,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
             {isToday(day) && !isFirstCompletion && (
               <div className="absolute inset-0 flex items-center justify-center pulse-animation">
                 <Image
-                  src="/img/stickers/empty-sticker1.png" 
+                  src={`/img/stickers/empty-sticker${randomStickerNumber}.png`}
                   alt="Empty sticker"
                   width={40}
                   height={40}
