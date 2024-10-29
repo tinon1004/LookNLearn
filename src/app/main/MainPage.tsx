@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 
 type CalendarProps = {
@@ -10,6 +11,7 @@ type CalendarProps = {
 
 const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [isFirstCompletion, setIsFirstCompletion] = useState<boolean>(false);
   const today = new Date();
 
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
@@ -30,13 +32,13 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-4 w-full max-w-2xl">
       <style jsx>{`
-        @keyframes blink {
-          0% { background-color: #60A5FA; }
-          50% { background-color: #2563EB; }
-          100% { background-color: #60A5FA; }
+         @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+          100% { transform: scale(1); }
         }
-        .blink-animation {
-          animation: blink 2s infinite;
+        .pulse-animation {
+          animation: pulse 2s infinite;
         }
       `}</style>
       <div className="flex justify-between items-start mb-2">
@@ -78,12 +80,21 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
           <button
             key={day}
             onClick={() => handleDayClick(day)}
-            className={`relative aspect-square border-r-2 border-b-2 border-gray-200
-              ${isToday(day) ? 'text-white blink-animation' : ''}`}
+            className={`relative aspect-square border-r-2 border-b-2 border-gray-200`}
           >
             <div className="absolute top-2 left-2 text-sm">
               {day}
             </div>
+            {isToday(day) && !isFirstCompletion && (
+              <div className="absolute inset-0 flex items-center justify-center pulse-animation">
+                <Image
+                  src="/img/stickers/empty-sticker1.png" 
+                  alt="Empty sticker"
+                  width={40}
+                  height={40}
+                />
+              </div>
+            )}
           </button>
         ))}
       </div>
