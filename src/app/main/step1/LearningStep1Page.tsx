@@ -14,7 +14,6 @@ export default function LearningStep1Page() {
   const router = useRouter();
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showNextButton, setShowNextButton] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentImage, setCurrentImage] = useState<ImageData>(getRandomImage());
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
   const [wrongAttempts, setWrongAttempts] = useState(0);

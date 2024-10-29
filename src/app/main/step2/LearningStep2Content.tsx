@@ -28,6 +28,7 @@ export default function LearningStep2Content() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [results, setResults] = useState<AnalysisResult[]>([]);
   const [attemptCount, setAttemptCount] = useState<number>(0);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPhotoCaptured, setIsPhotoCaptured] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
