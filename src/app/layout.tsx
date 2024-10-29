@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PWA NextJS",
-  description: "It's a simple progressive web application made with NextJS",
+  title: "Look and Learn",
+  description: "It's a Look and Learn web application made with NextJS",
   generator: "Next.js",
   manifest: "/manifest.json",
   keywords: ["nextjs", "next14", "pwa", "next-pwa"],
@@ -20,7 +20,8 @@ export const metadata: Metadata = {
   viewport:
     "minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover",
   icons: [
-    { rel: "apple-touch-icon", url: "icons/hamppung.png" }
+    { rel: "apple-touch-icon", url: "icons/hamppung.png" },
+    { rel: "icon", url: "favicon.ico" }
   ],
 };
 
