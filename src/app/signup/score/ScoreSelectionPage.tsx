@@ -28,6 +28,11 @@ export default function ScoreSelectionPage() {
     }));
   };
 
+  const isFormComplete = () => {
+    return formData.iq !== '' && 
+           formData.gas !== '' && 
+           formData.isChecked;
+  };
 
   const handleSubmit = () => {
     console.log('Form Data:', formData);
@@ -124,16 +129,21 @@ export default function ScoreSelectionPage() {
 
           <button
             onClick={handleSubmit}
-            className="w-full text-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#4A90E2] hover:bg-[#357ABD] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4A90E2]"
+            className="w-full text-center py-3 px-4 border-2 border-[#292E33] border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-[#DAE0E6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4A90E2]"
           >
             건너 뛰기
           </button>
 
         <button
           onClick={handleSubmit}
-          className="w-full px-4 py-3 bg-[#9EBCDF] hover:bg-[#8BAACE] text-white font-medium rounded-md transition duration-300"
+          disabled={!isFormComplete()}
+          className={`w-full px-4 py-3 ${
+            isFormComplete() 
+              ? 'bg-[#2F8EFF] hover:bg-[#2F8EFF]/90' 
+              : 'bg-[#DAE0E6]' 
+          } text-white font-medium rounded-md transition duration-300`}
         >
-          다음으로 이동하기
+          다음
         </button>
         </div>
       </div>
