@@ -9,6 +9,12 @@ interface AnalysisResult {
   probability: number;
 }
 
+interface PredictionResponse {
+  results: Array<{
+    predictions: AnalysisResult[];
+  }>;
+}
+
 export default function LearningStep2Content() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -77,23 +83,27 @@ export default function LearningStep2Content() {
 
         setIsLoading(true);
         try {
-          const response = await fetch(capturedImage);
-          const blob = await response.blob();
+          const base64Data = capturedImage.split(',')[1];
+          const blob = await fetch(`data:image/jpeg;base64,${base64Data}`).then(res => res.blob());
           const formData = new FormData();
           formData.append('image', blob, 'captured_image.jpg');
 
           const uploadResponse = await fetch('http://127.0.0.1:5000/upload', {
             method: 'POST',
             body: formData,
+            mode: 'cors',
           });
 
           if (!uploadResponse.ok) {
             throw new Error('업로드 실패');
           }
 
-          const analysisResults: AnalysisResult[] = await uploadResponse.json();
-          const sortedResults = analysisResults.sort((a, b) => b.probability - a.probability);
-          setResults(sortedResults.slice(0, 3));
+          const data: PredictionResponse = await uploadResponse.json();
+          
+          if (data.results && data.results[0] && data.results[0].predictions) {
+            const topThreePredictions = data.results[0].predictions.slice(0, 3);
+            setResults(topThreePredictions);
+          }
           setIsPhotoCaptured(true);
         } catch (err) {
           console.error('업로드 오류:', err);
@@ -185,8 +195,7 @@ export default function LearningStep2Content() {
       <div className="mt-4 flex justify-center">
         <button 
           onClick={MovePage}
-          disabled={!isPhotoCaptured}
-          className="bg-blue-500 text-white px-6 py-2 rounded-md w-1/2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-blue-500 text-white px-6 py-2 rounded-md w-1/2 hover:bg-blue-600 transition-colors"
         >
           {count === 5 && isFirstCompletion ? '학습 완료' : '다음 감정으로 이동하기'}
         </button>
@@ -211,4 +220,3 @@ export default function LearningStep2Content() {
     }
   }
 }
-
