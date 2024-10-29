@@ -11,7 +11,7 @@ type CalendarProps = {
 
 const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isFirstCompletion, setIsFirstCompletion] = useState<boolean>(false);
   const [randomStickerNumber, setRandomStickerNumber] = useState<number>(1);
   const today = new Date();
@@ -35,6 +35,12 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
     currentDate.getFullYear() === today.getFullYear() &&
     currentDate.getMonth() === today.getMonth() &&
     day === today.getDate();
+
+    const getStickerPath = (stickerNumber: number, isCompleted: boolean) => {
+      return isCompleted 
+        ? `/img/stickers/full-sticker${stickerNumber}.png`
+        : `/img/stickers/empty-sticker${stickerNumber}.png`;
+    };
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-4 w-full max-w-2xl">
@@ -92,11 +98,11 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
             <div className="absolute top-2 left-2 text-sm">
               {day}
             </div>
-            {isToday(day) && !isFirstCompletion && (
-              <div className="absolute inset-0 flex items-center justify-center pulse-animation">
+            {isToday(day) && (
+              <div className={`absolute inset-0 flex items-center justify-center ${!isFirstCompletion ? 'pulse-animation' : ''}`}>
                 <Image
-                  src={`/img/stickers/empty-sticker${randomStickerNumber}.png`}
-                  alt="Empty sticker"
+                  src={getStickerPath(randomStickerNumber, isFirstCompletion)}
+                  alt={isFirstCompletion ? "Full sticker" : "Empty sticker"}
                   width={40}
                   height={40}
                 />
