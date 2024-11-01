@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface SymptomType {
   id: number;
@@ -11,21 +12,15 @@ interface SymptomType {
 export default function SymptomsSelectionPage() {
   const router = useRouter();
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
 
   const symptoms: SymptomType[] = [
-    { id: 1, text: "관련 증상이 없다" },
-    { id: 2, text: "발달 수준에 적합한 또래 관계를 형성하지 못한다" },
-    { id: 3, text: "자발적으로 다른 사람과 즐거움이나 관심을 함께 나누고 싶어 하지 않는다" },
-    { id: 4, text: "정서적 상호작용이 부족하다" },
-    { id: 5, text: "구어 발달이 지연된다" },
-    { id: 6, text: "대화를 시작하거나 지속하는 데 어려움이 있다" },
-    { id: 7, text: "한정된 관심사에 몰두하며, 그 몰두하는 정도가 비정상적이다" },
-    { id: 8, text: "외관상 특특하다" },
-    { id: 9, text: "비기능적인 일이나 관습에 변함없이 집착한다" },
-    { id: 10, text: "상동적이고 반복적인 운동 양식(손이나 손가락을 꼬는 등)을 보인다" },
-    { id: 11, text: "물건의 어떤 부분에 대해 지속적으로 집착한다" },
-    { id: 12, text: "눈 맞추기, 얼굴 표정, 제스처 사용이 적절하지 않거나 빈도가 적다" }
+    { id: 1, text: "친구 사귀기를 어려워 한다." },
+    { id: 2, text: "다른 사람과 소통을 어려워 한다." },
+    { id: 3, text: "대화를 지속하는 것에 힘들어 한다." },
+    { id: 4, text: "다른 사람과 깊은 공감에 힘들어 한다." },
+    { id: 5, text: "특정 관심사에만 관심을 둔다." },
+    { id: 6, text: "특이한/특정 행동을 반복한다." },
+    { id: 7, text: "아이컨택을 어려워 한다." }
   ];
 
   const handleSymptomToggle = (symptomText: string) => {
@@ -45,72 +40,73 @@ export default function SymptomsSelectionPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="w-full max-w-md space-y-8 pb-20">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">증상 체크리스트</h1>
-          <p className="mt-2 text-gray-600">해당되는 증상을 모두 선택해주세요</p>
+          <div className="mx-auto h-40 w-60 relative">
+            <Image
+              src="/img/Logo.png" 
+              alt="Logo"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <p className="text-gray-600">증상 선택에 따른 특화된 학습을</p>
+          <p className="text-gray-600">진행할 수 있습니다.</p>
         </div>
 
         <div className="w-full space-y-4">
-          <div className="relative">
-            <p className="text-center mb-1" >증상을 모두 선택 후 👇 아래의 버튼을 다시 클릭하세요</p>
-            <button
-              type="button"
-              onClick={() => setIsOpen(!isOpen)}
-              className="w-full px-4 py-3 text-left bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[#9EBCDF]"
+          {symptoms.map((symptom) => (
+            <div
+              key={symptom.id}
+              onClick={() => handleSymptomToggle(symptom.text)}
+              className={`
+                p-3 
+                rounded-md 
+                cursor-pointer 
+                border-2 
+                border-[#9EBCDF]
+                transition-all
+                ${selectedSymptoms.includes(symptom.text) 
+                  ? 'bg-transparent' 
+                  : 'bg-white'}
+              `}
             >
-              증상을 선택해주세요
+              <div className="flex items-center">
+                <div className={`
+                    w-5 
+                    h-5 
+                    mr-3 
+                    border-2
+                    rounded-sm
+                    flex 
+                    items-center 
+                    justify-center
+                    transition-colors
+                    border-[#525c66]
+                    bg-white
+                  `}>
+                   {selectedSymptoms.includes(symptom.text) && (
+                    <span className="text-[#525c66] text-sm">✓</span>
+                  )}
+                </div>
+                <span className="text-sm">{symptom.text}</span>
+              </div>
+            </div>
+          ))}
+
+          <div className="flex flex-col space-y-2">
+            <button
+              onClick={handleSubmit}
+              className="w-full px-4 py-3 border-2 border-[#525c66] text-gray-700 font-medium rounded-md hover:bg-gray-100 transition duration-300 bg-white"
+            >
+              건너뛰기
             </button>
-            
-            {isOpen && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-                {symptoms.map((symptom) => (
-                  <div
-                    key={symptom.id}
-                    className={`px-4 py-3 cursor-pointer hover:bg-gray-100 ${
-                      selectedSymptoms.includes(symptom.text) ? 'bg-gray-50' : ''
-                    }`}
-                    onClick={() => {
-                      handleSymptomToggle(symptom.text);
-                    }}
-                  >
-                    <div className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedSymptoms.includes(symptom.text)}
-                        onChange={() => {}}
-                        className="mr-3"
-                      />
-                      <span className="text-sm">{symptom.text}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
 
-          <div className="space-y-2">
-            {selectedSymptoms.map((symptom, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between bg-gray-50 px-4 py-2 rounded-md"
-              >
-                <span className="text-sm text-gray-700">{symptom}</span>
-                <button
-                  type="button"
-                  onClick={() => handleSymptomToggle(symptom)}
-                  className="ml-2 text-gray-500 hover:text-gray-700"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-
-          <button
-            onClick={handleSubmit}
-            className="w-full px-4 py-3 mt-4 bg-[#9EBCDF] hover:bg-[#8BAACE] text-white font-medium rounded-md transition duration-300"
-          >
+            <button
+              onClick={handleSubmit}
+              className="w-full px-4 py-3 mt-4 bg-[#9EBCDF] hover:bg-[#8BAACE] text-white font-medium rounded-md transition duration-300"
+            >
             가입하기
           </button>
+          </div>
         </div>
       </div>
     </div>
