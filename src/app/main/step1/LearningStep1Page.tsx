@@ -22,10 +22,12 @@ export default function LearningStep1Page() {
   const [learningCount, setLearningCount] = useState(0);
   
   useEffect(() => {
-    resetState();
+    if (!currentImage) {
+      setCurrentImage(getRandomImage());
+    }
     initializeLearningCount();
     checkPopupDisplay();
-  }, []);
+  }, [currentImage]);
 
   const checkPopupDisplay = () => {
     const today = new Date().toDateString();
@@ -41,12 +43,6 @@ export default function LearningStep1Page() {
     setShowPopup(false);
   };
 
-
-  useEffect(() => {
-    resetState();
-    initializeLearningCount();
-  }, []);
-
   const initializeLearningCount = () => {
     const lastResetDate = localStorage.getItem('lastResetDate');
     const today = new Date().toDateString();
@@ -59,14 +55,6 @@ export default function LearningStep1Page() {
     } else {
       setLearningCount(count ? parseInt(count) : 0);
     }
-  };
-
-  const resetState = () => {
-    setIsCorrect(null);
-    setShowNextButton(false);
-    setCurrentImage(getRandomImage());
-    setSelectedEmotion(null);
-    setWrongAttempts(0);
   };
 
   const handleEmotionSelect = (emotion: Emotion) => {
