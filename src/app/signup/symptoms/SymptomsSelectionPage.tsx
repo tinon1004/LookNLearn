@@ -36,6 +36,8 @@ export default function SymptomsSelectionPage() {
     router.push('/signup/completion'); 
   };
 
+  const isAnySymptomSelected = selectedSymptoms.length > 0;
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="w-full max-w-md space-y-8 pb-20">
@@ -95,14 +97,27 @@ export default function SymptomsSelectionPage() {
           <div className="flex flex-col space-y-2">
             <button
               onClick={handleSubmit}
-              className="w-full px-4 py-3 border-2 border-[#525c66] text-gray-700 font-medium rounded-md hover:bg-gray-100 transition duration-300 bg-white"
+              className="w-full px-4 py-3 border-2 border-[#525c66] text-gray-700 font-medium rounded-md hover:bg-gray-100 transition duration-300"
             >
               건너뛰기
             </button>
 
             <button
               onClick={handleSubmit}
-              className="w-full px-4 py-3 mt-4 bg-[#9EBCDF] hover:bg-[#8BAACE] text-white font-medium rounded-md transition duration-300"
+              disabled={!isAnySymptomSelected}
+              className={`
+                w-full 
+                px-4 
+                py-3 
+                mt-4 
+                font-medium 
+                rounded-md 
+                transition 
+                duration-300
+                ${isAnySymptomSelected 
+                  ? 'bg-[#9EBCDF] hover:bg-[#8BAACE] text-white cursor-pointer' 
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
+              `}
             >
             가입하기
           </button>
