@@ -13,14 +13,28 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [isFirstCompletion, setIsFirstCompletion] = useState<boolean>(false);
   const [randomStickerNumber, setRandomStickerNumber] = useState<number>(1);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [learningCount, setLearningCount] = useState<number>(0);
   const today = new Date();
 
   useEffect(() => {
-    const storedCompletion = localStorage.getItem('isFirstCompletion');
-    setIsFirstCompletion(storedCompletion === 'false');
     const randomNumber = Math.floor(Math.random() * 4) + 1; 
     setRandomStickerNumber(randomNumber);
+    
+    const lastResetDate = localStorage.getItem('lastResetDate');
+    const todayString = new Date().toDateString();
+    const count = localStorage.getItem('learningCount');
+    
+    if (lastResetDate !== todayString) {
+      setLearningCount(0);
+      setIsFirstCompletion(false);
+    } else {
+      const currentCount = count ? parseInt(count) : 0;
+      setLearningCount(currentCount);
+      setIsFirstCompletion(currentCount >= 5);
+    }
   }, []); 
+
 
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
