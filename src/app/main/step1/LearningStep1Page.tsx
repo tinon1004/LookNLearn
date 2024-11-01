@@ -8,10 +8,12 @@ import {
   getRandomImage,
   ImageData
 } from './EmotionData';
+import EmotionPopup from './EmotionPopup';
 
 
 export default function LearningStep1Page() {
   const router = useRouter();
+  const [showPopup, setShowPopup] = useState(true);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const [currentImage, setCurrentImage] = useState<ImageData>(getRandomImage());
@@ -19,6 +21,16 @@ export default function LearningStep1Page() {
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [learningCount, setLearningCount] = useState(0);
   
+  useEffect(() => {
+    resetState();
+    initializeLearningCount();
+  }, []);
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
+
   useEffect(() => {
     resetState();
     initializeLearningCount();
@@ -79,70 +91,74 @@ export default function LearningStep1Page() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-        <div className="max-w-4xl mx-auto">
-            <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-10">
-                <img 
-                    src={currentImage.src} 
-                    alt="감정 표현" 
-                    className="w-full h-full object-cover rounded-lg mb-4"
-                />
-                <p className="text-center text-gray-700">
-                    {currentImage.description}
-                </p>
-        </div>
-
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          {emotions.map((emotion) => (
-            <button
-              key={emotion}
-              onClick={() => handleEmotionSelect(emotion)}
-              className="
-                flex flex-col items-center justify-center p-4 rounded-lg 
-                bg-white drop-shadow-md 
-                hover:drop-shadow-lg transition-shadow
-                "
-            >
-              <span className="text-3xl mb-2">{getEmoticonForEmotion(emotion)}</span>
-              <span className="text-sm text-gray-700">{emotion}</span>
-            </button>
-          ))}
-        
-
-            {isCorrect !== null && (
-                <div className={`flex flex-col items-center justify-center p-4 rounded-lg ${
-                    isCorrect ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
-                }`}>
-                    {isCorrect && <span className="text-3xl mb-2">👏</span>}
-                    <div className="text-sm text-center">
-                        {getFeedbackMessage().map((line, index) => (
-                            <React.Fragment key={index}>
-                            {line}
-                            {index < getFeedbackMessage().length - 1 && <br />}
-                            </React.Fragment>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </div>
-
-
+    <>
+      {showPopup && <EmotionPopup onClose={handleClosePopup} />}
       
-        <div className="text-center mt-6">
-            <button 
-              onClick={MovePage}
-              disabled={!showNextButton}
-              className={`bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold transition-colors ${showNextButton ? 'hover:bg-blue-600' : 'opacity-50 cursor-not-allowed'}`}
-            >
-              다음으로 이동하기
-            </button>
-        </div>
+      <div className="min-h-screen bg-gray-100 p-6">
+          <div className="max-w-4xl mx-auto">
+              <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-10">
+                  <img 
+                      src={currentImage.src} 
+                      alt="감정 표현" 
+                      className="w-full h-full object-cover rounded-lg mb-4"
+                  />
+                  <p className="text-center text-gray-700">
+                      {currentImage.description}
+                  </p>
+          </div>
+
+          <div className="grid grid-cols-4 gap-4 mb-6">
+            {emotions.map((emotion) => (
+              <button
+                key={emotion}
+                onClick={() => handleEmotionSelect(emotion)}
+                className="
+                  flex flex-col items-center justify-center p-4 rounded-lg 
+                  bg-white drop-shadow-md 
+                  hover:drop-shadow-lg transition-shadow
+                  "
+              >
+                <span className="text-3xl mb-2">{getEmoticonForEmotion(emotion)}</span>
+                <span className="text-sm text-gray-700">{emotion}</span>
+              </button>
+            ))}
+          
+
+              {isCorrect !== null && (
+                  <div className={`flex flex-col items-center justify-center p-4 rounded-lg ${
+                      isCorrect ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
+                  }`}>
+                      {isCorrect && <span className="text-3xl mb-2">👏</span>}
+                      <div className="text-sm text-center">
+                          {getFeedbackMessage().map((line, index) => (
+                              <React.Fragment key={index}>
+                              {line}
+                              {index < getFeedbackMessage().length - 1 && <br />}
+                              </React.Fragment>
+                          ))}
+                      </div>
+                  </div>
+              )}
+          </div>
+
+
         
-        <div className="text-center text-gray-500 text-sm mt-4">
-          {learningCount + 1}/ 5
-        </div>
-        </div>
-    </div>
+          <div className="text-center mt-6">
+              <button 
+                onClick={MovePage}
+                disabled={!showNextButton}
+                className={`bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold transition-colors ${showNextButton ? 'hover:bg-blue-600' : 'opacity-50 cursor-not-allowed'}`}
+              >
+                다음으로 이동하기
+              </button>
+          </div>
+          
+          <div className="text-center text-gray-500 text-sm mt-4">
+            {learningCount + 1}/ 5
+          </div>
+          </div>
+      </div>
+    </>
   );
 }
 
