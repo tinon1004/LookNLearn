@@ -13,7 +13,7 @@ import EmotionPopup from './EmotionPopup';
 
 export default function LearningStep1Page() {
   const router = useRouter();
-  const [showPopup, setShowPopup] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const [currentImage, setCurrentImage] = useState<ImageData>(getRandomImage());
@@ -24,7 +24,18 @@ export default function LearningStep1Page() {
   useEffect(() => {
     resetState();
     initializeLearningCount();
+    checkPopupDisplay();
   }, []);
+
+  const checkPopupDisplay = () => {
+    const today = new Date().toDateString();
+    const lastPopupDate = localStorage.getItem('lastPopupDate');
+
+    if (lastPopupDate !== today) {
+      setShowPopup(true);
+      localStorage.setItem('lastPopupDate', today);
+    }
+  };
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -95,16 +106,16 @@ export default function LearningStep1Page() {
       {showPopup && <EmotionPopup onClose={handleClosePopup} />}
       
       <div className="min-h-screen bg-gray-100 p-6">
-          <div className="max-w-4xl mx-auto">
-              <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-10">
-                  <img 
-                      src={currentImage.src} 
-                      alt="감정 표현" 
-                      className="w-full h-full object-cover rounded-lg mb-4"
-                  />
-                  <p className="text-center text-gray-700">
-                      {currentImage.description}
-                  </p>
+        <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-10">
+            <img 
+              src={currentImage.src} 
+              alt="감정 표현" 
+              className="w-full h-full object-cover rounded-lg mb-4"
+            />
+            <p className="text-center text-gray-700">
+              {currentImage.description}
+            </p>
           </div>
 
           <div className="grid grid-cols-4 gap-4 mb-6">
