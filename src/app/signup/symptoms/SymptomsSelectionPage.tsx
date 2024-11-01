@@ -115,7 +115,7 @@ export default function SymptomsSelectionPage() {
                 transition 
                 duration-300
                 ${isAnySymptomSelected 
-                  ? 'bg-[#9EBCDF] hover:bg-[#8BAACE] text-white cursor-pointer' 
+                  ? 'bg-[#2F8EFF] hover:bg-[#8BAACE] text-white cursor-pointer' 
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'}
               `}
             >

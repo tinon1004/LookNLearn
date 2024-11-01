@@ -99,7 +99,7 @@ export default function ScoreSelectionPage() {
                     alt="Upload icon"
                     width={16}
                     height={16}
-                    className="text-gray-500"
+                    className="text-gray-500  hover:bg-gray-100 transition duration-300 "
                   />
                   <span>인증 자료 업로드</span>
                 </div>
@@ -129,7 +129,7 @@ export default function ScoreSelectionPage() {
 
           <button
             onClick={handleSubmit}
-            className="w-full text-center py-3 px-4 border-2 border-[#292E33] border-transparent rounded-md shadow-sm text-sm font-medium hover:bg-[#DAE0E6] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4A90E2]"
+            className="w-full px-4 py-3 border-2 border-[#525c66] text-gray-700 font-medium rounded-md hover:bg-gray-100 transition duration-300"
           >
             건너 뛰기
           </button>
