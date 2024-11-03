@@ -15,7 +15,7 @@ const StickerStatus: React.FC = () => {
     <div className="bg-white rounded-xl shadow-lg p-4 w-full flex-1">
       <div className="space-y-4">
         <div>
-          <h3 className="text-lg font-semibold mb-2">전체 스티커 현황</h3>
+          <h3 className="text-lg font-semibold mb-4">전체 스티커 현황</h3>
           <div className="flex items-center justify-between px-4">
             <div className="flex items-center gap-2">
               <Image src="/img/stickers/full-sticker1.png" alt="Green sticker" width={40} height={40} />
@@ -40,7 +40,7 @@ const StickerStatus: React.FC = () => {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-2">10월의 스티커 현황</h3>
+          <h3 className="text-lg font-semibold mt-10 mb-4">10월의 스티커 현황</h3>
           <div className="flex items-center justify-between px-4">
             <div className="flex items-center gap-2">
               <Image src="/img/stickers/full-sticker1.png" alt="Green sticker" width={40} height={40} />
