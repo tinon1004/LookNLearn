@@ -12,7 +12,7 @@ import Image from 'next/image';
 
 const StickerStatus: React.FC = () => {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-4 w-full max-w-2xl mt-4">
+    <div className="bg-white rounded-xl shadow-lg p-4 w-full flex-1">
       <div className="space-y-4">
         <div>
           <h3 className="text-lg font-semibold mb-2">전체 스티커 현황</h3>
