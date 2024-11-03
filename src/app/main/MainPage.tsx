@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import StickerStatus from './StickerStatus';
 
 
 type CalendarProps = {
@@ -169,6 +170,7 @@ const MainPage: React.FC = () => {
         </button>
       </div>
       <Calendar onDayClick={handleDayClick} />
+      <StickerStatus />
     </div>
   );
 }
