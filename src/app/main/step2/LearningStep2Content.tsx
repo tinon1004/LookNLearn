@@ -89,7 +89,7 @@ export default function LearningStep2Content() {
           const formData = new FormData();
           formData.append('image', blob, 'captured_image.jpg');
 
-          const uploadResponse = await fetch('http://127.0.0.1:5000/upload', {
+          const uploadResponse = await fetch('${process.env.NEXT_PUBLIC_FLASK_APIKEY}/upload', {
             method: 'POST',
             body: formData,
             mode: 'cors',
