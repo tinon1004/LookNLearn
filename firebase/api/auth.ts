@@ -1,5 +1,5 @@
-import { createUserWithEmailAndPassword, UserCredential } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, UserCredential, signInWithEmailAndPassword, } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
 
 interface UserData {
@@ -49,3 +49,19 @@ export const signUpUser = async (
     throw error;
   }
 };
+
+export const loginUser = async (
+    email: string,
+    password: string
+  ): Promise<{ userCredential: UserCredential; userData: UserProfile | null }> => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+      const userData = userDoc.exists() ? userDoc.data() as UserProfile : null;
+  
+      return { userCredential, userData };
+    } catch (error) {
+      console.error("Error in loginUser:", error);
+      throw error;
+    }
+  };
