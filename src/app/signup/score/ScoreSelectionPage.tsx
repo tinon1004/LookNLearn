@@ -36,6 +36,11 @@ export default function ScoreSelectionPage() {
 
   const handleSubmit = () => {
     console.log('Form Data:', formData);
+    const scoreData = {
+      iq: formData.iq,
+      gas: formData.gas
+    };
+    sessionStorage.setItem('scoreData', JSON.stringify(scoreData));
     router.push('/signup/symptoms');
   };
 

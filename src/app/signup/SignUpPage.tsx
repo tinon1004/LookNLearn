@@ -49,6 +49,26 @@ export default function SignUpPage() {
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
+
+      if (formData.password !== formData.passwordConfirm) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+      }
+
+      try {
+        sessionStorage.setItem('signupData', JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          birthDate: formData.birthDate,
+          password: formData.password
+        }));
+        
+        router.push('/signup/score');
+      } catch (error) {
+        console.error("Signup error:", error);
+        alert("회원가입 중 오류가 발생했습니다.");
+      }
+
       MoveToScore();
     };
   

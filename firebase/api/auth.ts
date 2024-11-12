@@ -1,0 +1,51 @@
+import { createUserWithEmailAndPassword, UserCredential } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebaseConfig";
+
+interface UserData {
+  name: string;
+  email: string;
+  birthDate: string;
+}
+
+interface ScoreData {
+  iq?: string;
+  gas?: string;
+}
+
+interface UserProfile extends UserData {
+  scores?: ScoreData;
+  symptoms?: string[];
+}
+
+export const signUpUser = async (
+  userData: UserData,
+  password: string,
+  scores?: ScoreData,
+  symptoms?: string[]
+): Promise<UserCredential> => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      userData.email,
+      password
+    );
+
+    try {
+      const userProfile: UserProfile = {
+        ...userData,
+        scores: scores || {},
+        symptoms: symptoms || []
+      };
+
+      await setDoc(doc(db, "users", userCredential.user.uid), userProfile);
+    } catch (firestoreError) {
+      console.error("Firestore error:", firestoreError);
+    }
+
+    return userCredential;
+  } catch (error) {
+    console.error("Error in signUpUser:", error);
+    throw error;
+  }
+};

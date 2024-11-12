@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Image from 'next/image';
+import { signUpUser } from '@/firebase/api/auth';
 
 interface SymptomType {
   id: number;
@@ -31,9 +32,30 @@ export default function SymptomsSelectionPage() {
     );
   };
 
-  const handleSubmit = () => {
-    console.log('선택된 증상들:', selectedSymptoms);
-    router.push('/signup/completion'); 
+  const handleSubmit = async () => {
+    try {
+      const signupData = JSON.parse(sessionStorage.getItem('signupData') || '{}');
+      const scoreData = JSON.parse(sessionStorage.getItem('scoreData') || '{}');
+
+      await signUpUser(
+        {
+          name: signupData.name,
+          email: signupData.email,
+          birthDate: signupData.birthDate,
+        },
+        signupData.password,
+        scoreData,
+        selectedSymptoms
+      );
+
+      sessionStorage.removeItem('signupData');
+      sessionStorage.removeItem('scoreData');
+
+      router.push('/signup/completion');
+    } catch (error) {
+      console.error("Final signup error:", error);
+      alert("회원가입 중 오류가 발생했습니다.");
+    }
   };
 
   const isAnySymptomSelected = selectedSymptoms.length > 0;
