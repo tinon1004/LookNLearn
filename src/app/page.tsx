@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { loginUser } from '@/firebase/api/auth';
+import { FirebaseError } from 'firebase/app';
 
 export default function LandingPage() {
  
@@ -18,14 +19,20 @@ export default function LandingPage() {
       await loginUser(email, password);
       router.push('/main');
       console.log("로그인 완료");
-    } catch (error: any) {
+    } catch (error) {
       let errorMessage = '로그인에 실패했습니다.';
-      if (error.code === 'auth/user-not-found') {
-        errorMessage = '존재하지 않는 이메일입니다.';
-      } else if (error.code === 'auth/wrong-password') {
-        errorMessage = '비밀번호가 올바르지 않습니다.';
-      } else if (error.code === 'auth/invalid-email') {
-        errorMessage = '올바른 이메일 형식이 아닙니다.';
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+            errorMessage = '존재하지 않는 이메일입니다.';
+            break;
+          case 'auth/wrong-password':
+            errorMessage = '비밀번호가 올바르지 않습니다.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = '올바른 이메일 형식이 아닙니다.';
+            break;
+        }
       }
       setError(errorMessage);
     }
