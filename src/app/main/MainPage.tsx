@@ -51,7 +51,7 @@ const MainPage: React.FC = () => {
               <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-10">
                 <button
                   onClick={() => {
-                    handleNavigation('/report');
+                    handleNavigation('/main/report');
                     setIsDropdownOpen(false);
                   }}
                   className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"

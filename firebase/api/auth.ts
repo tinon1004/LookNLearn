@@ -2,18 +2,18 @@ import { createUserWithEmailAndPassword, UserCredential, signInWithEmailAndPassw
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { auth, db } from "../firebaseConfig";
 
-interface UserData {
+export interface UserData {
   name: string;
   email: string;
   birthDate: string;
 }
 
-interface ScoreData {
+export interface ScoreData {
   iq?: string;
   gas?: string;
 }
 
-interface UserProfile extends UserData {
+export interface UserProfile extends UserData {
   scores?: ScoreData;
   symptoms?: string[];
 }
