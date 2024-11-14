@@ -42,7 +42,6 @@ const ReportPage = () => {
         <h2 className="text-xl font-medium mb-4">마이페이지</h2>
         
         <div className="flex mb-6">
-          {/* Left side - User Info */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-gray-500">이름</span>
@@ -58,10 +57,8 @@ const ReportPage = () => {
             </div>
           </div>
 
-          {/* Divider */}
           <div className="mx-6 border-l border-gray-300"></div>
 
-          {/* Right side - IQ & GAS */}
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-gray-500">IQ</span>
@@ -73,13 +70,12 @@ const ReportPage = () => {
             </div>
           </div>
         </div>
-
-        {/* Symptoms */}
+        
         <div className="flex flex-wrap gap-2">
           {userProfile.symptoms?.map((symptom, index) => (
             <span 
               key={index} 
-              className="px-4 py-2 text-blue-600 rounded-full text-sm border border-blue-200"
+              className="px-4 py-2 text-600 rounded-full text-sm border border-2 border-blue-600"
             >
               {symptom}
             </span>
