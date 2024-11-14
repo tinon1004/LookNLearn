@@ -58,10 +58,10 @@ export const loginUser = async (
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
       const userData = userDoc.exists() ? userDoc.data() as UserProfile : null;
-  
+
       return { userCredential, userData };
     } catch (error) {
       console.error("Error in loginUser:", error);
       throw error;
     }
-  };
+};
