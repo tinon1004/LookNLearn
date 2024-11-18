@@ -5,6 +5,7 @@ import { useRouter, useSearchParams  } from 'next/navigation';
 import { Emotion } from '../step1/EmotionData';
 import { useAuth } from '@/src/app/context/AuthProvider';
 import { getDailyLearning, markFirstCompletionDone } from '@/firebase/api/dailyLearning';
+import StopLearningPopup from '../StopLearningPopup';
 
 interface AnalysisResult {
   label: string;
@@ -23,7 +24,7 @@ export default function LearningStep2Content() {
   const emotion = searchParams.get('emotion') as Emotion;
   const count = parseInt(searchParams.get('count') || '0');
   const [isFirstCompletion, setIsFirstCompletion] = useState(true);
-  
+  const [showStopPopup, setShowStopPopup] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -158,67 +159,84 @@ export default function LearningStep2Content() {
 
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <p className="text-xl mb-2">방금 선택한</p>
-        <p className="text-xl mb-2">{getEmoticonForEmotion(emotion)} {emotion}을 찍어 보세요!</p>
-        <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden mb-4">
-          {isCapturing && !imageSrc ? (
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              className="w-full h-full object-cover transform scale-x-[-1]"
-            />
-          ) : imageSrc ? (
-            <img
-              src={imageSrc}
-              alt="Captured"
-              className="w-full h-full object-cover transform scale-x-[-1]"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-500">
-              웹캠이 비활성화되었습니다
-            </div>
-          )}
+    <>
+      <StopLearningPopup 
+          isOpen={showStopPopup}
+          onClose={() => setShowStopPopup(false)}
+          onConfirm={() => {
+            setShowStopPopup(false);
+            router.push('/main');
+          }}
+        />
+
+      <div className="max-w-2xl mx-auto p-4">
+        <div className="bg-white rounded-lg shadow-md p-6">
+          <p className="text-xl mb-2">방금 선택한</p>
+          <p className="text-xl mb-2">{getEmoticonForEmotion(emotion)} {emotion}을 찍어 보세요!</p>
+          <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden mb-4">
+            {isCapturing && !imageSrc ? (
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-full h-full object-cover transform scale-x-[-1]"
+              />
+            ) : imageSrc ? (
+              <img
+                src={imageSrc}
+                alt="Captured"
+                className="w-full h-full object-cover transform scale-x-[-1]"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-500">
+                웹캠이 비활성화되었습니다
+              </div>
+            )}
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={handleCaptureClick}
+              disabled={isLoading || attemptCount >= 2}
+              className="bg-blue-500 text-white px-6 py-2 rounded-md disabled:opacity-50"
+            >
+              {isLoading ? '처리 중...' : imageSrc ? '한 번 더 찍기' : '사진 찍기'}
+            </button>
+          </div>
         </div>
-        <div className="flex justify-center">
+        
+        {error && <p className="text-red-500 text-center my-4">{error}</p>}
+        {results.length > 0 && (
+          <div className="bg-gray-100 p-4 rounded-lg my-4">
+            <h2 className="text-lg font-semibold mb-2">표정 분석 결과 (Top 3):</h2>
+            {results.map((result, index) => (
+              <div key={index} className="flex justify-between items-center mb-2">
+                <p><strong>감정:</strong> {result.label}</p>
+                <p><strong>정확도:</strong> {(result.probability * 100).toFixed(2)}%</p>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        <div className="text-center mt-6 flex justify-center gap-4">
           <button
-            onClick={handleCaptureClick}
-            disabled={isLoading || attemptCount >= 2}
-            className="bg-blue-500 text-white px-6 py-2 rounded-md disabled:opacity-50"
+            onClick={() => setShowStopPopup(true)}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-2 px-4 rounded-lg transition duration-300"
           >
-            {isLoading ? '처리 중...' : imageSrc ? '한 번 더 찍기' : '사진 찍기'}
+            학습 그만두기
+          </button>
+          <button 
+            onClick={MovePage}
+            className="bg-blue-500 text-white px-6 py-2 rounded-md inline-flex justify-center hover:bg-blue-600 transition-colors"
+          >
+            {count === 5 && isFirstCompletion ? '학습 완료' : '다음 감정으로 이동하기'}
           </button>
         </div>
-      </div>
-      
-      {error && <p className="text-red-500 text-center my-4">{error}</p>}
-      {results.length > 0 && (
-        <div className="bg-gray-100 p-4 rounded-lg my-4">
-          <h2 className="text-lg font-semibold mb-2">표정 분석 결과 (Top 3):</h2>
-          {results.map((result, index) => (
-            <div key={index} className="flex justify-between items-center mb-2">
-              <p><strong>감정:</strong> {result.label}</p>
-              <p><strong>정확도:</strong> {(result.probability * 100).toFixed(2)}%</p>
-            </div>
-          ))}
-        </div>
-      )}
-      
-      <div className="mt-4 flex justify-center">
-        <button 
-          onClick={MovePage}
-          className="bg-blue-500 text-white px-6 py-2 rounded-md w-1/2 hover:bg-blue-600 transition-colors"
-        >
-          {count === 5 && isFirstCompletion ? '학습 완료' : '다음 감정으로 이동하기'}
-        </button>
-      </div>
 
-      <div className="text-center text-gray-500 text-sm mt-4">
-        {count}/ 5
+        <div className="text-center text-gray-500 text-sm mt-4">
+          {count}/ 5
+        </div>
       </div>
-    </div>
+    </>
   );
 
   function getEmoticonForEmotion(emotion: Emotion): string {

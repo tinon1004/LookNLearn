@@ -11,11 +11,12 @@ import {
 import EmotionPopup from './EmotionPopup';
 import { useAuth } from '@/src/app/context/AuthProvider';
 import { getDailyLearning, incrementDailyCount } from '@/firebase/api/dailyLearning';
-
+import StopLearningPopup from '../StopLearningPopup';
 
 export default function LearningStep1Page() {
   const router = useRouter();
   const [showPopup, setShowPopup] = useState(false);
+  const [showStopPopup, setShowStopPopup] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [showNextButton, setShowNextButton] = useState(false);
   const [currentImage, setCurrentImage] = useState<ImageData>(getRandomImage());
@@ -96,7 +97,15 @@ export default function LearningStep1Page() {
   return (
     <>
       {showPopup && <EmotionPopup onClose={handleClosePopup} />}
-      
+      <StopLearningPopup 
+        isOpen={showStopPopup}
+        onClose={() => setShowStopPopup(false)}
+        onConfirm={() => {
+          setShowStopPopup(false);
+          router.push('/main');
+        }}
+      />
+
       <div className="min-h-screen bg-gray-100 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-10">
@@ -146,7 +155,13 @@ export default function LearningStep1Page() {
 
 
         
-          <div className="text-center mt-6">
+          <div className="text-center mt-6 flex justify-center gap-4">
+              <button
+                onClick={() => setShowStopPopup(true)}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-2 px-4 rounded-lg transition duration-300"
+              >
+                학습 그만두기
+              </button>
               <button 
                 onClick={MovePage}
                 disabled={!showNextButton}
