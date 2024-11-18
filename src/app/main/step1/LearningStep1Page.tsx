@@ -9,6 +9,8 @@ import {
   ImageData
 } from './EmotionData';
 import EmotionPopup from './EmotionPopup';
+import { useAuth } from '@/src/app/context/AuthProvider';
+import { getDailyLearning, incrementDailyCount } from '@/firebase/api/dailyLearning';
 
 
 export default function LearningStep1Page() {
@@ -20,7 +22,8 @@ export default function LearningStep1Page() {
   const [selectedEmotion, setSelectedEmotion] = useState<Emotion | null>(null);
   const [wrongAttempts, setWrongAttempts] = useState(0);
   const [learningCount, setLearningCount] = useState(0);
-  
+  const { user } = useAuth();
+
   useEffect(() => {
     if (!currentImage) {
       setCurrentImage(getRandomImage());
@@ -42,21 +45,7 @@ export default function LearningStep1Page() {
   const handleClosePopup = () => {
     setShowPopup(false);
   };
-
-  const initializeLearningCount = () => {
-    const lastResetDate = localStorage.getItem('lastResetDate');
-    const today = new Date().toDateString();
-    const count = localStorage.getItem('learningCount');
-
-    if (lastResetDate !== today) {
-      localStorage.setItem('learningCount', '0');
-      localStorage.setItem('lastResetDate', today);
-      setLearningCount(0);
-    } else {
-      setLearningCount(count ? parseInt(count) : 0);
-    }
-  };
-
+  
   const handleEmotionSelect = (emotion: Emotion) => {
     const correct = emotion === currentImage.correctEmotion;
     setIsCorrect(correct);
@@ -80,13 +69,28 @@ export default function LearningStep1Page() {
     ];
     return feedbackMessages[wrongAttempts % feedbackMessages.length];
   };
-
-  const MovePage = () => {
-    if (selectedEmotion) {
-      const newCount = learningCount + 1;
-      localStorage.setItem('learningCount', newCount.toString());
-      router.push(`/main/step2?emotion=${encodeURIComponent(selectedEmotion)}&count=${newCount}`);
+  
+  useEffect(() => {
+    if (!currentImage) {
+      setCurrentImage(getRandomImage());
     }
+    if (user) {
+      initializeLearningCount();
+    }
+    checkPopupDisplay();
+  }, [currentImage, user]);
+
+  const initializeLearningCount = async () => {
+    if (!user) return;
+    const learning = await getDailyLearning(user.uid);
+    setLearningCount(learning.totalSessions);
+  };
+
+  const MovePage = async () => {
+    if (!user || !selectedEmotion) return;
+    
+    const newCount = await incrementDailyCount(user.uid);
+    router.push(`/main/step2?emotion=${encodeURIComponent(selectedEmotion)}&count=${newCount}`);
   };
 
   return (

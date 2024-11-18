@@ -3,6 +3,8 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams  } from 'next/navigation';
 import { Emotion } from '../step1/EmotionData';
+import { useAuth } from '@/src/app/context/AuthProvider';
+import { getDailyLearning, markFirstCompletionDone } from '@/firebase/api/dailyLearning';
 
 interface AnalysisResult {
   label: string;
@@ -32,6 +34,8 @@ export default function LearningStep2Content() {
   const [isPhotoCaptured, setIsPhotoCaptured] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+
+  const { user } = useAuth();
 
   const startWebcam = useCallback(async () => {
     try {
@@ -132,18 +136,26 @@ export default function LearningStep2Content() {
   };
 
   useEffect(() => {
-    const firstCompletion = localStorage.getItem('isFirstCompletion');
-    setIsFirstCompletion(firstCompletion !== 'false');
-  }, []);
+    const checkFirstCompletion = async () => {
+      if (!user) return;
+      const learning = await getDailyLearning(user.uid);
+      setIsFirstCompletion(learning.isFirstCompletion);
+    };
+    
+    checkFirstCompletion();
+  }, [user]);
 
-  const MovePage = () => {
+  const MovePage = async () => {
+    if (!user) return;
+
     if (count === 5 && isFirstCompletion) {
-      localStorage.setItem('isFirstCompletion', 'false');
+      await markFirstCompletionDone(user.uid);
       router.push('/main/completion');
     } else {
       router.push('/main/step1');
     }
   };
+
 
   return (
     <div className="max-w-2xl mx-auto p-4">
