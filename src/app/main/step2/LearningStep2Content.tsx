@@ -23,7 +23,6 @@ export default function LearningStep2Content() {
   const emotion = searchParams.get('emotion') as Emotion;
   const count = parseInt(searchParams.get('count') || '0');
   const [isFirstCompletion, setIsFirstCompletion] = useState(true);
-  const [showStopPopup, setShowStopPopup] = useState(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
