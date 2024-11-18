@@ -41,11 +41,17 @@ export async function getAttendance(userId: string): Promise<AttendanceRecord | 
 
 export async function getMonthlyStats(userId: string, year: number, month: number): Promise<MonthlyStats> {
   const attendanceRef = collection(db, "attendance");
-  const q = query(
-    attendanceRef,
-    where("year", "==", year),
-    where("month", "==", month)
-  );
+  let q;
+  
+  if (month === 0) {
+    q = query(attendanceRef, where("year", "==", year));
+  } else {
+    q = query(
+      attendanceRef,
+      where("year", "==", year),
+      where("month", "==", month)
+    );
+  }
 
   const querySnapshot = await getDocs(q);
   const stats: MonthlyStats = {
