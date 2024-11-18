@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, query, where, getDocs, deleteDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 
 export interface AttendanceRecord {
@@ -7,6 +7,7 @@ export interface AttendanceRecord {
   isComplete: boolean;
   year: number;
   month: number;
+  userId: string; 
 }
 
 export interface MonthlyStats {
@@ -19,13 +20,20 @@ export interface MonthlyStats {
 
 export async function updateAttendance(userId: string, learningCount: number): Promise<AttendanceRecord> {
   const today = new Date();
+  const isComplete = learningCount >= 5;
+  
   const attendance: AttendanceRecord = {
     date: today.toISOString().split('T')[0],
-    stickerType: Math.floor(Math.random() * 4) + 1,
-    isComplete: learningCount >= 5,
+    stickerType: isComplete ? Math.floor(Math.random() * 4) + 1 : 0,
+    isComplete: isComplete,
     year: today.getFullYear(),
-    month: today.getMonth() + 1
+    month: today.getMonth() + 1,
+    userId: userId
   };
+
+  if (!isComplete) {
+    return attendance;
+  }
 
   await setDoc(doc(db, "attendance", `${userId}_${attendance.date}`), attendance);
   return attendance;
@@ -44,12 +52,19 @@ export async function getMonthlyStats(userId: string, year: number, month: numbe
   let q;
   
   if (month === 0) {
-    q = query(attendanceRef, where("year", "==", year));
+    q = query(
+        attendanceRef, 
+        where("year", "==", year),
+        where("userId", "==", userId),
+        where("isComplete", "==", true)
+      );
   } else {
     q = query(
       attendanceRef,
       where("year", "==", year),
-      where("month", "==", month)
+      where("month", "==", month),
+      where("userId", "==", userId),
+      where("isComplete", "==", true)
     );
   }
 
@@ -64,21 +79,23 @@ export async function getMonthlyStats(userId: string, year: number, month: numbe
 
   querySnapshot.forEach((doc) => {
     const data = doc.data() as AttendanceRecord;
-    switch (data.stickerType) {
-      case 1:
-        stats.sticker1++;
-        break;
-      case 2:
-        stats.sticker2++;
-        break;
-      case 3:
-        stats.sticker3++;
-        break;
-      case 4:
-        stats.sticker4++;
-        break;
+    if (data.userId === userId && data.stickerType > 0) { 
+        switch (data.stickerType) {
+          case 1:
+            stats.sticker1++;
+            break;
+          case 2:
+            stats.sticker2++;
+            break;
+          case 3:
+            stats.sticker3++;
+            break;
+          case 4:
+            stats.sticker4++;
+            break;
+        }
+        if (data.isComplete) stats.totalComplete++;
     }
-    if (data.isComplete) stats.totalComplete++;
   });
 
   return stats;
@@ -87,9 +104,31 @@ export async function getMonthlyStats(userId: string, year: number, month: numbe
 export async function checkAndUpdateAttendance(userId: string, learningCount: number): Promise<AttendanceRecord> {
   const existing = await getAttendance(userId);
   
-  if (!existing || existing.isComplete !== (learningCount >= 5)) {
+  const isComplete = learningCount >= 5;
+  
+  if (!existing && isComplete) {
     return await updateAttendance(userId, learningCount);
   }
   
-  return existing;
+  if (existing && existing.isComplete !== isComplete) {
+    if (isComplete) {
+      return await updateAttendance(userId, learningCount);
+    } else {
+      await deleteDoc(doc(db, "attendance", `${userId}_${existing.date}`));
+      return {
+        ...existing,
+        isComplete: false,
+        stickerType: 0
+      };
+    }
+  }
+  
+  return existing || {
+    date: new Date().toISOString().split('T')[0],
+    stickerType: 0,
+    isComplete: false,
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    userId: userId
+  };
 }
