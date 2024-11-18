@@ -119,10 +119,10 @@ const MainPage: React.FC = () => {
             서비스 소개
           </button>
           <button 
-            onClick={() => router.push('/main/step1')} 
+            onClick={() => router.push('/main/information')} 
             className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-300 ml-4"
           >
-            학습하기
+            정보 자료실
           </button>
         </div>
         </div>
