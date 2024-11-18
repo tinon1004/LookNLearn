@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { auth } from '@/firebase/firebaseConfig';
+import { getAttendance, AttendanceRecord } from '@/firebase/api/attendance';
 
 type CalendarProps = {
   onDayClick: (day: number, year: number, month: number) => void;
@@ -9,29 +11,19 @@ type CalendarProps = {
 
 const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [isFirstCompletion, setIsFirstCompletion] = useState<boolean>(false);
-  const [randomStickerNumber, setRandomStickerNumber] = useState<number>(1);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [learningCount, setLearningCount] = useState<number>(0);
+  const [attendanceData, setAttendanceData] = useState<AttendanceRecord | null>(null);
   const today = new Date();
-
+ 
   useEffect(() => {
-    const randomNumber = Math.floor(Math.random() * 4) + 1; 
-    setRandomStickerNumber(randomNumber);
-    
-    const lastResetDate = localStorage.getItem('lastResetDate');
-    const todayString = new Date().toDateString();
-    const count = localStorage.getItem('learningCount');
-    
-    if (lastResetDate !== todayString) {
-      setLearningCount(0);
-      setIsFirstCompletion(false);
-    } else {
-      const currentCount = count ? parseInt(count) : 0;
-      setLearningCount(currentCount);
-      setIsFirstCompletion(currentCount >= 5);
-    }
-  }, []); 
+    const fetchAttendance = async () => {
+      const userId = auth.currentUser?.uid;
+      if (userId) {
+        const attendance = await getAttendance(userId);
+        setAttendanceData(attendance);
+      }
+    };
+    fetchAttendance();
+  }, []);
 
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
@@ -109,10 +101,13 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
               {day}
             </div>
             {isToday(day) && (
-              <div className={`absolute inset-0 flex items-center justify-center ${!isFirstCompletion ? 'pulse-animation' : ''}`}>
+              <div className={`absolute inset-0 flex items-center justify-center ${!attendanceData?.isComplete ? 'pulse-animation' : ''}`}>
                 <Image
-                  src={getStickerPath(randomStickerNumber, isFirstCompletion)}
-                  alt={isFirstCompletion ? "Full sticker" : "Empty sticker"}
+                  src={getStickerPath(
+                    attendanceData?.stickerType || Math.floor(Math.random() * 4) + 1,
+                    attendanceData?.isComplete || false
+                  )}
+                  alt={attendanceData?.isComplete ? "Full sticker" : "Empty sticker"}
                   width={40}
                   height={40}
                 />

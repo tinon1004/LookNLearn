@@ -1,6 +1,6 @@
-// api/dailyLearning.ts
 import { doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import { checkAndUpdateAttendance } from './attendance';
 
 export interface DailyLearning {
   totalSessions: number;
@@ -33,7 +33,11 @@ export async function incrementDailyCount(userId: string): Promise<number> {
   });
   
   const updatedDoc = await getDoc(docRef);
-  return (updatedDoc.data() as DailyLearning).totalSessions;
+  const totalSessions = (updatedDoc.data() as DailyLearning).totalSessions;
+
+  await checkAndUpdateAttendance(userId, totalSessions);
+  
+  return totalSessions;
 }
 
 export async function markFirstCompletionDone(userId: string): Promise<void> {
@@ -49,3 +53,4 @@ function isNewDay(lastDate: string): boolean {
   const now = new Date().toDateString();
   return last !== now;
 }
+
