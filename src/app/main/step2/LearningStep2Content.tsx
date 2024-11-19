@@ -173,11 +173,11 @@ export default function LearningStep2Content() {
   return (
     <>
 
-      <div className="max-w-2xl mx-auto p-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <p className="text-xl mb-2">방금 선택한</p>
-          <p className="text-xl mb-2">{getEmoticonForEmotion(emotion)} {emotion}을 찍어 보세요!</p>
-          <div className="w-full h-64 bg-gray-200 rounded-lg overflow-hidden mb-4">
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-white rounded-xl shadow-lg p-8">
+          <p className="text-2xl mb-3">방금 선택한</p>
+          <p className="text-2xl mb-4">{getEmoticonForEmotion(emotion)} {emotion}을 찍어 보세요!</p>
+          <div className="w-full h-96 bg-gray-200 rounded-xl overflow-hidden mb-6">
             {isCapturing && !imageSrc ? (
               <video
                 ref={videoRef}
@@ -192,7 +192,7 @@ export default function LearningStep2Content() {
                 className="w-full h-full object-cover transform scale-x-[-1]"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-500">
+              <div className="w-full h-full flex items-center justify-center text-gray-500 text-xl">
                 웹캠이 비활성화되었습니다
               </div>
             )}
@@ -201,37 +201,35 @@ export default function LearningStep2Content() {
             <button
               onClick={handleCaptureClick}
               disabled={isLoading || attemptCount >= 2}
-              className="bg-blue-500 text-white px-6 py-2 rounded-md disabled:opacity-50"
+              className="bg-blue-500 text-white px-4 py-2 text-lg rounded-lg disabled:opacity-50 hover:bg-blue-600 transition-colors"
             >
               {isLoading ? '처리 중...' : imageSrc ? '한 번 더 찍기' : '사진 찍기'}
             </button>
           </div>
         </div>
         
-        {error && <p className="text-red-500 text-center my-4">{error}</p>}
+        {error && <p className="text-red-500 text-center text-lg my-6">{error}</p>}
         {results.length > 0 && (
-          <div className="bg-gray-100 p-6 rounded-lg my-4">
-            {results.length > 0 && (
-              <div className="flex flex-col items-center space-y-3">
-                <h2 className="text-xl font-semibold">표정 분석 결과</h2>
-                <p className="text-lg">
+          <div className="bg-white rounded-xl shadow-lg p-8 my-6">
+              <div className="flex flex-col items-center space-y-4">
+                <h2 className="text-2xl font-semibold">표정 분석 결과</h2>
+                <p className="text-xl">
                   <span className="font-medium">{results[0].label}</span>
                 </p>
               </div>
-            )}
           </div>
         )}
         
-        <div className="mt-4 flex justify-center">
+        <div className="mt-6 flex justify-center">
           <button 
             onClick={MovePage}
-            className="bg-blue-500 text-white px-6 py-2 rounded-md inline-flex justify-center hover:bg-blue-600 transition-colors"
+            className="bg-blue-500 text-white px-4 py-2 text-lg rounded-lg inline-flex justify-center hover:bg-blue-600 transition-colors"
           >
             {count === 5 && isFirstCompletion ? '학습 완료' : '다음 감정으로 이동하기'}
           </button>
         </div>
 
-        <div className="text-center text-gray-500 text-sm mt-4">
+        <div className="text-center text-gray-500 text-lg mt-6">
           {count}/ 5
         </div>
       </div>
