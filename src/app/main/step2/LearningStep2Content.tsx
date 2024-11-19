@@ -5,6 +5,7 @@ import { useRouter, useSearchParams  } from 'next/navigation';
 import { Emotion } from '../step1/EmotionData';
 import { useAuth } from '@/src/app/context/AuthProvider';
 import { getDailyLearning, markFirstCompletionDone } from '@/firebase/api/dailyLearning';
+import { saveEmotionAnalysis } from '@/firebase/api/analysis';
 
 interface AnalysisResult {
   label: string;
@@ -19,6 +20,7 @@ interface PredictionResponse {
 
 export default function LearningStep2Content() {
   const router = useRouter();
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const emotion = searchParams.get('emotion') as Emotion;
   const count = parseInt(searchParams.get('count') || '0');
@@ -33,8 +35,8 @@ export default function LearningStep2Content() {
   const [isPhotoCaptured, setIsPhotoCaptured] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const [bestAccuracy, setBestAccuracy] = useState<number>(0);
 
-  const { user } = useAuth();
 
   const startWebcam = useCallback(async () => {
     try {
@@ -75,51 +77,63 @@ export default function LearningStep2Content() {
   }, [startWebcam, stopWebcam]);
 
   const captureAndUpload = useCallback(async () => {
-    if (videoRef.current) {
-      const canvas = document.createElement('canvas');
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-        const capturedImage = canvas.toDataURL('image/jpeg');
-        setImageSrc(capturedImage);
+    if (!videoRef.current || !user) return;
 
-        setIsLoading(true);
-        try {
-          const base64Data = capturedImage.split(',')[1];
-          const blob = await fetch(`data:image/jpeg;base64,${base64Data}`).then(res => res.blob());
-          const formData = new FormData();
-          formData.append('image', blob, 'captured_image.jpg');
-          const apiUrl = process.env.NEXT_PUBLIC_FLASK_APIKEY + '/upload';
+    const canvas = document.createElement('canvas');
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    const ctx = canvas.getContext('2d');
 
-          const uploadResponse = await fetch(apiUrl, {
-            method: 'POST',
-            body: formData,
-            mode: 'cors',
-          });
+    if (ctx) {
+      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      const capturedImage = canvas.toDataURL('image/jpeg');
+      setImageSrc(capturedImage);
 
-          if (!uploadResponse.ok) {
-            throw new Error('업로드 실패');
-          }
+      setIsLoading(true);
+      try {
+        const base64Data = capturedImage.split(',')[1];
+        const blob = await fetch(`data:image/jpeg;base64,${base64Data}`).then(res => res.blob());
+        const formData = new FormData();
+        formData.append('image', blob, 'captured_image.jpg');
+        const apiUrl = process.env.NEXT_PUBLIC_FLASK_APIKEY + '/upload';
 
-          const data: PredictionResponse = await uploadResponse.json();
-          
-          if (data.results && data.results[0] && data.results[0].predictions) {
-            const topThreePredictions = data.results[0].predictions.slice(0, 3);
-            setResults(topThreePredictions);
-          }
-          setIsPhotoCaptured(true);
-        } catch (err) {
-          console.error('업로드 오류:', err);
-          setError('이미지 업로드 중 오류가 발생했습니다.');
-        } finally {
-          setIsLoading(false);
-          setAttemptCount(prevCount => prevCount + 1);
+        const uploadResponse = await fetch(apiUrl, {
+          method: 'POST',
+          body: formData,
+          mode: 'cors',
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error('업로드 실패');
         }
+
+        const data: PredictionResponse = await uploadResponse.json();
+          
+        if (data.results && data.results[0] && data.results[0].predictions) {
+          const prediction = data.results[0].predictions[0];
+          setResults([prediction]); 
+          
+          const currentAccuracy = prediction.probability * 100;
+          if (currentAccuracy > bestAccuracy && isFirstCompletion) {
+            setBestAccuracy(currentAccuracy);
+            
+            await saveEmotionAnalysis(
+              user.uid,
+              emotion,
+              currentAccuracy
+            );
+          }
+        }
+        setIsPhotoCaptured(true);
+      } catch (err) {
+        console.error('업로드 오류:', err);
+        setError('이미지 업로드 중 오류가 발생했습니다.');
+      } finally {
+        setIsLoading(false);
+        setAttemptCount(prevCount => prevCount + 1);
       }
     }
-  }, []);
+  }, [user, emotion, bestAccuracy, isFirstCompletion]);
 
   const handleCaptureClick = () => {
     if (attemptCount < 2) {
@@ -196,14 +210,13 @@ export default function LearningStep2Content() {
         
         {error && <p className="text-red-500 text-center my-4">{error}</p>}
         {results.length > 0 && (
-          <div className="bg-gray-100 p-4 rounded-lg my-4">
-            <h2 className="text-lg font-semibold mb-2">표정 분석 결과 (Top 3):</h2>
+          <div className="bg-gray-100 p-6 rounded-lg my-4">
             {results.length > 0 && (
-              <div className="bg-gray-100 p-4 rounded-lg my-4">
-                <h2 className="text-lg font-semibold mb-2">표정 분석 결과:</h2>
-                <div className="flex justify-between items-center">
-                  <p><strong>감지된 감정:</strong> {results[0].label}</p>
-                </div>
+              <div className="flex flex-col items-center space-y-3">
+                <h2 className="text-xl font-semibold">표정 분석 결과</h2>
+                <p className="text-lg">
+                  <span className="font-medium">{results[0].label}</span>
+                </p>
               </div>
             )}
           </div>
