@@ -198,12 +198,14 @@ export default function LearningStep2Content() {
         {results.length > 0 && (
           <div className="bg-gray-100 p-4 rounded-lg my-4">
             <h2 className="text-lg font-semibold mb-2">표정 분석 결과 (Top 3):</h2>
-            {results.map((result, index) => (
-              <div key={index} className="flex justify-between items-center mb-2">
-                <p><strong>감정:</strong> {result.label}</p>
-                <p><strong>정확도:</strong> {(result.probability * 100).toFixed(2)}%</p>
+            {results.length > 0 && (
+              <div className="bg-gray-100 p-4 rounded-lg my-4">
+                <h2 className="text-lg font-semibold mb-2">표정 분석 결과:</h2>
+                <div className="flex justify-between items-center">
+                  <p><strong>감지된 감정:</strong> {results[0].label}</p>
+                </div>
               </div>
-            ))}
+            )}
           </div>
         )}
         
