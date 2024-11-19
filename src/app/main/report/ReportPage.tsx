@@ -5,6 +5,7 @@ import { auth, db } from '@/firebase/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import type { UserProfile } from '@/firebase/api/auth';
+import LearningData from './LearningData';
 
 const ReportPage = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -37,6 +38,7 @@ const ReportPage = () => {
   }
 
   return (
+    <>
     <div className="container mx-auto p-6 max-w-7xl">
       <div className="bg-white rounded-3xl shadow-sm p-8">
         <h2 className="text-xl font-medium mb-4">마이페이지</h2>
@@ -83,6 +85,8 @@ const ReportPage = () => {
         </div>
       </div>
     </div>
+    <LearningData/>
+    </>
   );
 };
 
