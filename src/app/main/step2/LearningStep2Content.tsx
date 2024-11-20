@@ -76,6 +76,20 @@ export default function LearningStep2Content() {
     };
   }, [startWebcam, stopWebcam]);
 
+  const translateEmotionToKorean = (englishEmotion: string): string => {
+    const emotionMap: { [key: string]: string } = {
+      'angry': '분노',
+      'disgust': '짜증',
+      'fear': '두려움, 무서움',
+      'happy': '행복',
+      'neutral': '덤덤',
+      'sad': '슬픔, 우울',
+      'surprise': '놀람'
+    };
+    
+    return emotionMap[englishEmotion.toLowerCase()] || englishEmotion;
+  };
+
   const captureAndUpload = useCallback(async () => {
     if (!videoRef.current || !user) return;
 
@@ -111,7 +125,11 @@ export default function LearningStep2Content() {
           
         if (data.results && data.results[0] && data.results[0].predictions) {
           const prediction = data.results[0].predictions[0];
-          setResults([prediction]); 
+          const koreanPrediction = {
+            ...prediction,
+            label: translateEmotionToKorean(prediction.label)
+          };
+          setResults([koreanPrediction]); 
           
           const currentAccuracy = prediction.probability * 100;
           if (currentAccuracy > bestAccuracy && isFirstCompletion) {
