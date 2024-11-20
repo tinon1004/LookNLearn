@@ -48,24 +48,6 @@ const EmotionLearningReport = () => {
 
             const quizData = await getLastSevenDaysQuizData(userId);
             setAccuracyData(quizData);
-
-            const generateLastSevenDays = (): AccuracyData[] => {
-            const dates = [];
-            for (let i = 6; i >= 0; i--) {
-                const date = new Date();
-                date.setDate(date.getDate() - i);
-                const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
-                
-                dates.push({
-                date: formattedDate,
-                quizAccuracy: Math.floor(Math.random() * (75 - 45) + 45),
-                expressionAccuracy: Math.floor(Math.random() * (70 - 40) + 40)
-                });
-            }
-            return dates;
-            };
-
-            setAccuracyData(generateLastSevenDays());
             setLoading(false);
         } catch (error) {
             console.error('Error fetching learning data:', error);
@@ -117,11 +99,12 @@ const EmotionLearningReport = () => {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ea4c89'];
 
   const calculateStats = (): Stats => {
+    const nonZeroAccuracies = accuracyData.filter(day => day.quizAccuracy > 0);
     return {
       totalSessions: dailyLearningData?.totalSessions || 0,
-      avgQuizAccuracy: Math.round(
-        accuracyData.reduce((sum, day) => sum + day.quizAccuracy, 0) / (accuracyData.length || 1)
-      ),
+      avgQuizAccuracy: nonZeroAccuracies.length > 0
+        ? Math.round(nonZeroAccuracies.reduce((sum, day) => sum + day.quizAccuracy, 0) / nonZeroAccuracies.length)
+        : 0,
       avgExpressionAccuracy: Math.round(
         accuracyData.reduce((sum, day) => sum + day.expressionAccuracy, 0) / (accuracyData.length || 1)
       )
