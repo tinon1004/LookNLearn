@@ -6,7 +6,9 @@ import {
 import { auth } from '@/firebase/firebaseConfig';
 import { getDailyLearning, DailyLearning } from '@/firebase/api/dailyLearning';
 import { getLastSevenDaysQuizData } from '@/firebase/api/quiz';
-import {getLastSevenDaysAnalysisData} from '@/firebase/api/analysis';
+import { getLastSevenDaysAnalysisData } from '@/firebase/api/analysis';
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/firebase/firebaseConfig";
 
 interface AccuracyData {
   date: string;
@@ -30,10 +32,70 @@ interface Stats {
   avgExpressionAccuracy: number;
 }
 
+interface EmotionAccuracy {
+    emotion: string;
+    accuracy: number;
+    count: number;
+  }
+
 const EmotionLearningReport = () => {
   const [accuracyData, setAccuracyData] = useState<AccuracyData[]>([]);
   const [dailyLearningData, setDailyLearningData] = useState<DailyLearning | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  const [emotionStats, setEmotionStats] = useState<{ 
+        bestEmotion: string;
+        needsPracticeEmotion: string;
+        distribution: EmotionDistribution[];
+    }>({ 
+        bestEmotion: '', 
+        needsPracticeEmotion: '', 
+        distribution: [] 
+    });
+    const [loading, setLoading] = useState(true);
+
+    const getEmotionStats = async (userId: string): Promise<{
+        accuracies: EmotionAccuracy[];
+        distribution: EmotionDistribution[];
+    }> => {
+        const emotionAccuracies: { [key: string]: { total: number; count: number } } = {};
+        const emotionCounts: { [key: string]: number } = {};
+        
+        const dates = Array.from({ length: 7 }, (_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        return date.toISOString().split('T')[0];
+        });
+
+        for (const date of dates) {
+        const analysisRef = collection(db, "analysis", userId, date);
+        const snapshot = await getDocs(analysisRef);
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const emotion = data.emotion;
+
+            if (!emotionAccuracies[emotion]) {
+            emotionAccuracies[emotion] = { total: 0, count: 0 };
+            }
+            emotionAccuracies[emotion].total += data.accuracy;
+            emotionAccuracies[emotion].count++;
+            emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+        });
+        }
+
+        const accuracies: EmotionAccuracy[] = Object.entries(emotionAccuracies).map(([emotion, stats]) => ({
+        emotion,
+        accuracy: Math.round(stats.total / stats.count),
+        count: emotionCounts[emotion]
+        }));
+
+        const distribution: EmotionDistribution[] = Object.entries(emotionCounts).map(([name, count]) => ({
+        name,
+        count
+        }));
+
+        return { accuracies, distribution };
+    };
 
     useEffect(() => {
         const fetchLearningData = async () => {
@@ -54,6 +116,19 @@ const EmotionLearningReport = () => {
               }));
             
             setAccuracyData(combinedData);
+
+            const { accuracies, distribution } = await getEmotionStats(userId);
+            
+            const sortedAccuracies = accuracies.sort((a, b) => b.accuracy - a.accuracy);
+            const bestEmotion = sortedAccuracies[0]?.emotion || '데이터 없음';
+            const needsPracticeEmotion = sortedAccuracies[sortedAccuracies.length - 1]?.emotion || '데이터 없음';
+            
+            setEmotionStats({
+                bestEmotion,
+                needsPracticeEmotion,
+                distribution
+              });
+
             setLoading(false);
         } catch (error) {
             console.error('Error fetching learning data:', error);
@@ -90,16 +165,6 @@ const EmotionLearningReport = () => {
     }
     return data;
   };
-
-  const emotionDistribution: EmotionDistribution[] = [
-    { name: '행복한 표정', count: 15 },
-    { name: '슬픈 표정', count: 12 },
-    { name: '화난 표정', count: 8 },
-    { name: '두려운 표정', count: 7 },
-    { name: '놀란 표정', count: 6 },
-    { name: '짜증난 표정', count: 5 },
-    { name: '무표정', count: 5 },
-  ];
 
   const dailyPracticeData = generateDailyPracticeData();
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d', '#ea4c89'];
@@ -179,7 +244,7 @@ const EmotionLearningReport = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={emotionDistribution}
+                    data={emotionStats.distribution}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
@@ -188,7 +253,7 @@ const EmotionLearningReport = () => {
                     paddingAngle={5}
                     dataKey="count"
                   >
-                    {emotionDistribution.map((entry, index) => (
+                    {emotionStats.distribution.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -239,15 +304,11 @@ const EmotionLearningReport = () => {
               </div>
               <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                 <span className="text-gray-600">가장 잘하는 감정</span>
-                <span className="font-medium">행복한 표정</span>
+                <span className="font-medium">{emotionStats.bestEmotion}</span>
               </div>
               <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                 <span className="text-gray-600">더 연습이 필요한 감정</span>
-                <span className="font-medium">두려운 표정</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">학습 지속 기간</span>
-                <span className="font-medium">7일</span>
+                <span className="font-medium">{emotionStats.needsPracticeEmotion}</span>
               </div>
             </div>
           </div>
