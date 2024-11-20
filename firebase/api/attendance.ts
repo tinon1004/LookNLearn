@@ -7,7 +7,6 @@ export interface AttendanceRecord {
   isComplete: boolean;
   year: number;
   month: number;
-  userId: string; 
 }
 
 export interface MonthlyStats {
@@ -18,49 +17,54 @@ export interface MonthlyStats {
   totalComplete: number;
 }
 
+function getKoreanDate(): Date {
+  const now = new Date();
+  return new Date(now.getTime() + (9 * 60 * 60 * 1000)); 
+}
+
+function formatDate(date: Date): string {
+  return date.toISOString().split('T')[0];
+}
+
 export async function updateAttendance(userId: string, learningCount: number): Promise<AttendanceRecord> {
-  const today = new Date();
+  const today = getKoreanDate();
+  const todayDate = formatDate(today);
   const isComplete = learningCount >= 5;
   
   const attendance: AttendanceRecord = {
-    date: today.toISOString().split('T')[0],
+    date: todayDate,
     stickerType: isComplete ? Math.floor(Math.random() * 4) + 1 : 0,
     isComplete: isComplete,
     year: today.getFullYear(),
     month: today.getMonth() + 1,
-    userId: userId
   };
 
   if (!isComplete) {
     return attendance;
   }
 
-  await setDoc(doc(db, "attendance", `${userId}_${attendance.date}`), attendance);
+  const dailyRef = doc(db, `attendance/${userId}/daily`, todayDate);
+  await setDoc(dailyRef, attendance);
   return attendance;
 }
 
 export async function getAttendance(userId: string): Promise<AttendanceRecord | null> {
-  const today = new Date().toISOString().split('T')[0];
-  const docRef = doc(db, "attendance", `${userId}_${today}`);
+  const todayDate = formatDate(getKoreanDate());
+  const dailyRef = doc(db, `attendance/${userId}/daily`, todayDate);
   
-  const docSnap = await getDoc(docRef);
+  const docSnap = await getDoc(dailyRef);
   return docSnap.exists() ? (docSnap.data() as AttendanceRecord) : null;
 }
 
 export async function getMonthlyStats(userId: string, year: number, month: number): Promise<MonthlyStats> {
-  const attendanceRef = collection(db, "attendance");
+  const dailyRef = collection(db, `attendance/${userId}/daily`);
   let q;
   
   if (month === 0) {
-    q = query(
-        attendanceRef, 
-        where("year", "==", year),
-        where("userId", "==", userId),
-        where("isComplete", "==", true)
-      );
+    q = query(dailyRef, where("year", "==", year), where("isComplete", "==", true));
   } else {
     q = query(
-      attendanceRef,
+      dailyRef,
       where("year", "==", year),
       where("month", "==", month),
       where("userId", "==", userId),
@@ -79,7 +83,7 @@ export async function getMonthlyStats(userId: string, year: number, month: numbe
 
   querySnapshot.forEach((doc) => {
     const data = doc.data() as AttendanceRecord;
-    if (data.userId === userId && data.stickerType > 0) { 
+    if (data.stickerType > 0) {
         switch (data.stickerType) {
           case 1:
             stats.sticker1++;
@@ -94,7 +98,7 @@ export async function getMonthlyStats(userId: string, year: number, month: numbe
             stats.sticker4++;
             break;
         }
-        if (data.isComplete) stats.totalComplete++;
+        stats.totalComplete++;
     }
   });
 
@@ -103,7 +107,6 @@ export async function getMonthlyStats(userId: string, year: number, month: numbe
 
 export async function checkAndUpdateAttendance(userId: string, learningCount: number): Promise<AttendanceRecord> {
   const existing = await getAttendance(userId);
-  
   const isComplete = learningCount >= 5;
   
   if (!existing && isComplete) {
@@ -111,10 +114,11 @@ export async function checkAndUpdateAttendance(userId: string, learningCount: nu
   }
   
   if (existing && existing.isComplete !== isComplete) {
+    const dailyRef = doc(db, `attendance/${userId}/daily`, existing.date);
     if (isComplete) {
       return await updateAttendance(userId, learningCount);
     } else {
-      await deleteDoc(doc(db, "attendance", `${userId}_${existing.date}`));
+      await deleteDoc(dailyRef);
       return {
         ...existing,
         isComplete: false,
@@ -123,12 +127,13 @@ export async function checkAndUpdateAttendance(userId: string, learningCount: nu
     }
   }
   
-  return existing || {
-    date: new Date().toISOString().split('T')[0],
+  return (
+    existing || {
+    date: formatDate(getKoreanDate()),
     stickerType: 0,
     isComplete: false,
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
-    userId: userId
-  };
+    }
+  );
 }

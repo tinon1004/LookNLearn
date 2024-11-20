@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, increment, collection } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { checkAndUpdateAttendance } from './attendance';
 
@@ -8,14 +8,27 @@ export interface DailyLearning {
   isFirstCompletion: boolean;
 }
 
+function getTodayDate(): string {
+  const now = new Date();
+  const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+  return koreaTime.toISOString().split("T")[0];
+}
+
+async function getDailyDocRef(userId: string, date: string) {
+  return doc(collection(doc(db, "dailyLearning", userId), "daily"), date);
+}
+
 export async function getDailyLearning(userId: string): Promise<DailyLearning> {
-  const docRef = doc(db, "dailyLearning", userId);
+  const today = getTodayDate();
+  const docRef = await getDailyDocRef(userId, today)
   const docSnap = await getDoc(docRef);
   
-  if (!docSnap.exists() || isNewDay(docSnap.data()?.lastSessionDate)) {
-    const initialLearning = {
+  if (!docSnap.exists()) {
+    const now = new Date();
+    const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+    const initialLearning: DailyLearning = {
       totalSessions: 0,
-      lastSessionDate: new Date().toISOString(),
+      lastSessionDate: koreaTime.toISOString(),
       isFirstCompletion: true
     };
     await setDoc(docRef, initialLearning);
@@ -26,10 +39,14 @@ export async function getDailyLearning(userId: string): Promise<DailyLearning> {
 }
 
 export async function incrementDailyCount(userId: string): Promise<number> {
-  const docRef = doc(db, "dailyLearning", userId);
+  const today = getTodayDate();
+  const docRef = await getDailyDocRef(userId, today);
+  const now = new Date();
+  const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+
   await updateDoc(docRef, {
     totalSessions: increment(1),
-    lastSessionDate: new Date().toISOString()
+    lastSessionDate: koreaTime.toISOString()
   });
   
   const updatedDoc = await getDoc(docRef);
@@ -41,16 +58,8 @@ export async function incrementDailyCount(userId: string): Promise<number> {
 }
 
 export async function markFirstCompletionDone(userId: string): Promise<void> {
-  const docRef = doc(db, "dailyLearning", userId);
-  await updateDoc(docRef, {
-    isFirstCompletion: false
-  });
-}
+  const today = getTodayDate();
+  const docRef = await getDailyDocRef(userId, today);
 
-function isNewDay(lastDate: string): boolean {
-  if (!lastDate) return true;
-  const last = new Date(lastDate).toDateString();
-  const now = new Date().toDateString();
-  return last !== now;
+  await updateDoc(docRef, { isFirstCompletion: false });
 }
-
