@@ -6,6 +6,7 @@ import {
 import { auth } from '@/firebase/firebaseConfig';
 import { getDailyLearning, DailyLearning } from '@/firebase/api/dailyLearning';
 import { getLastSevenDaysQuizData } from '@/firebase/api/quiz';
+import {getLastSevenDaysAnalysisData} from '@/firebase/api/analysis';
 
 interface AccuracyData {
   date: string;
@@ -45,9 +46,14 @@ const EmotionLearningReport = () => {
 
             const learningData = await getDailyLearning(userId);
             setDailyLearningData(learningData);
-
+            const analysisData = await getLastSevenDaysAnalysisData(userId);
             const quizData = await getLastSevenDaysQuizData(userId);
-            setAccuracyData(quizData);
+            const combinedData = quizData.map((quizItem, index) => ({
+                ...quizItem,
+                expressionAccuracy: analysisData[index].expressionAccuracy
+              }));
+            
+            setAccuracyData(combinedData);
             setLoading(false);
         } catch (error) {
             console.error('Error fetching learning data:', error);
@@ -100,14 +106,16 @@ const EmotionLearningReport = () => {
 
   const calculateStats = (): Stats => {
     const nonZeroAccuracies = accuracyData.filter(day => day.quizAccuracy > 0);
+    const nonZeroExpressionAccuracies = accuracyData.filter(day => day.expressionAccuracy > 0);
+
     return {
       totalSessions: dailyLearningData?.totalSessions || 0,
       avgQuizAccuracy: nonZeroAccuracies.length > 0
         ? Math.round(nonZeroAccuracies.reduce((sum, day) => sum + day.quizAccuracy, 0) / nonZeroAccuracies.length)
         : 0,
-      avgExpressionAccuracy: Math.round(
-        accuracyData.reduce((sum, day) => sum + day.expressionAccuracy, 0) / (accuracyData.length || 1)
-      )
+      avgExpressionAccuracy: nonZeroExpressionAccuracies.length > 0
+        ? Math.round(nonZeroExpressionAccuracies.reduce((sum, day) => sum + day.expressionAccuracy, 0) / nonZeroExpressionAccuracies.length)
+        : 0
     };
   };
 
