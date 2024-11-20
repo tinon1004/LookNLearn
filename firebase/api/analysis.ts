@@ -16,6 +16,8 @@ export async function saveEmotionAnalysis(
   const dailyLearning = await getDailyLearning(userId);
   
   if (dailyLearning.isFirstCompletion) {
+    const now = new Date();
+    const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
     const date = new Date().toISOString().split('T')[0];
     const docRef = doc(db, "analysis", userId, date, emotion);
     
@@ -24,7 +26,7 @@ export async function saveEmotionAnalysis(
     const analysisData: EmotionAnalysis = {
       emotion,
       accuracy: adjustedAccuracy,
-      timestamp: new Date().toISOString(),
+      timestamp: koreaTime.toISOString(),
     };
     
     await setDoc(docRef, analysisData);

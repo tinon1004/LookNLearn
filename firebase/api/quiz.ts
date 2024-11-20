@@ -13,6 +13,11 @@ export interface AccuracyData {
     expressionAccuracy: number;
   }
 
+function getKoreaDate(): Date {
+  const now = new Date();
+  return new Date(now.getTime() + (9 * 60 * 60 * 1000));
+}
+
 export async function trackQuizAttempt(
   userId: string, 
   isCorrect: boolean
@@ -23,7 +28,7 @@ export async function trackQuizAttempt(
     return;
   }
   
-  const today = new Date().toISOString().split('T')[0].replace(/-/g, '');
+  const today = getKoreaDate().toISOString().split('T')[0].replace(/-/g, '');
   const quizRef = doc(db, `quiz/${userId}/daily/${today}`);
   
   try {
@@ -50,10 +55,10 @@ export async function getLastSevenDaysQuizData(userId: string): Promise<Accuracy
     const result: AccuracyData[] = [];
     
     for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const dateString = date.toISOString().split('T')[0].replace(/-/g, '');
-      const formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
+      const koreaDate = getKoreaDate();
+      koreaDate.setDate(koreaDate.getDate() - i);
+      const dateString = koreaDate.toISOString().split('T')[0].replace(/-/g, '');
+      const formattedDate = `${koreaDate.getMonth() + 1}/${koreaDate.getDate()}`;
       
       const quizRef = doc(db, `quiz/${userId}/daily/${dateString}`);
       const quizDoc = await getDoc(quizRef);
