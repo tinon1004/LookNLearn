@@ -5,7 +5,7 @@ import {
   } from 'recharts';
 import { auth } from '@/firebase/firebaseConfig';
 import { getDailyLearning, DailyLearning } from '@/firebase/api/dailyLearning';
-import { getLastSevenDaysQuizData } from '@/firebase/api/EmotionQuiz';
+import { getLastSevenDaysQuizData } from '@/firebase/api/quiz';
 
 interface AccuracyData {
   date: string;

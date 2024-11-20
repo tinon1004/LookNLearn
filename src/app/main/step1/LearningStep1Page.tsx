@@ -12,7 +12,7 @@ import EmotionPopup from './EmotionPopup';
 import { useAuth } from '@/src/app/context/AuthProvider';
 import { getDailyLearning, incrementDailyCount } from '@/firebase/api/dailyLearning';
 import StopLearningPopup from '../StopLearningPopup';
-import { trackQuizAttempt } from '@/firebase/api/EmotionQuiz'; 
+import { trackQuizAttempt } from '@/firebase/api/quiz';
 
 export default function LearningStep1Page() {
   const router = useRouter();
