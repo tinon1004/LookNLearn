@@ -101,7 +101,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
               {day}
             </div>
             {isToday(day) && (
-              <div className={`absolute inset-0 flex items-center justify-center ${!attendanceData?.isComplete ? 'pulse-animation' : ''}`}>
+              <div className="absolute inset-0 flex items-center justify-center pulse-animation">
                 <Image
                   src={getStickerPath(
                     attendanceData?.stickerType || Math.floor(Math.random() * 4) + 1,

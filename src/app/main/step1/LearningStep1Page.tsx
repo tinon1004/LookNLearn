@@ -12,6 +12,7 @@ import EmotionPopup from './EmotionPopup';
 import { useAuth } from '@/src/app/context/AuthProvider';
 import { getDailyLearning, incrementDailyCount } from '@/firebase/api/dailyLearning';
 import StopLearningPopup from '../StopLearningPopup';
+import { trackQuizAttempt } from '@/firebase/api/EmotionQuiz'; 
 
 export default function LearningStep1Page() {
   const router = useRouter();
@@ -47,10 +48,21 @@ export default function LearningStep1Page() {
     setShowPopup(false);
   };
   
-  const handleEmotionSelect = (emotion: Emotion) => {
+  const handleEmotionSelect = async (emotion: Emotion) => {
     const correct = emotion === currentImage.correctEmotion;
     setIsCorrect(correct);
     setShowNextButton(correct);
+
+    if (user) {
+      if (wrongAttempts === 0) {
+        try {
+          await trackQuizAttempt(user.uid, correct);
+        } catch (error) {
+          console.error("퀴즈 시도 기록 중 오류:", error);
+        }
+      }
+    }
+
     if (correct) {
         setSelectedEmotion(emotion);
         setWrongAttempts(0);
