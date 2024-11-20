@@ -5,6 +5,7 @@ import {
   } from 'recharts';
 import { auth } from '@/firebase/firebaseConfig';
 import { getDailyLearning, DailyLearning } from '@/firebase/api/dailyLearning';
+import { getLastSevenDaysQuizData } from '@/firebase/api/EmotionQuiz';
 
 interface AccuracyData {
   date: string;
@@ -44,6 +45,9 @@ const EmotionLearningReport = () => {
 
             const learningData = await getDailyLearning(userId);
             setDailyLearningData(learningData);
+
+            const quizData = await getLastSevenDaysQuizData(userId);
+            setAccuracyData(quizData);
 
             const generateLastSevenDays = (): AccuracyData[] => {
             const dates = [];
@@ -155,8 +159,11 @@ const EmotionLearningReport = () => {
                 <LineChart data={accuracyData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip 
+                    formatter={(value: number) => [`${value}%`, "정확도"]}
+                    labelStyle={{ fontWeight: 'bold' }}
+                  />
                   <Legend />
                   <Line 
                     type="monotone" 
