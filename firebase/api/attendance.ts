@@ -136,3 +136,26 @@ export async function checkAndUpdateAttendance(userId: string, learningCount: nu
     }
   );
 }
+
+export async function getMonthlyAttendance(
+  userId: string,
+  year: number,
+  month: number
+): Promise<{ [key: string]: AttendanceRecord }> {
+  const dailyRef = collection(db, `attendance/${userId}/daily`);
+  const q = query(
+    dailyRef,
+    where("year", "==", year),
+    where("month", "==", month)
+  );
+
+  const querySnapshot = await getDocs(q);
+  const attendanceMap: { [key: string]: AttendanceRecord } = {};
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data() as AttendanceRecord;
+    attendanceMap[new Date(data.date).getDate()] = data;
+  });
+
+  return attendanceMap;
+}

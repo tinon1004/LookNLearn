@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { auth } from '@/firebase/firebaseConfig';
-import { getAttendance, AttendanceRecord } from '@/firebase/api/attendance';
+import { getMonthlyAttendance, AttendanceRecord } from '@/firebase/api/attendance';
 
 type CalendarProps = {
   onDayClick: (day: number, year: number, month: number) => void;
@@ -11,19 +11,33 @@ type CalendarProps = {
 
 const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [attendanceData, setAttendanceData] = useState<AttendanceRecord | null>(null);
+  const [monthlyAttendance, setMonthlyAttendance] = useState<{ [key: string]: AttendanceRecord }>({});
   const today = new Date();
+
+  const fetchMonthlyAttendance = async (date: Date) => {
+    const userId = auth.currentUser?.uid;
+    if (userId) {
+      try {
+        const attendance = await getMonthlyAttendance(
+          userId,
+          date.getFullYear(),
+          date.getMonth() + 1
+        );
+        setMonthlyAttendance(attendance);
+      } catch (error) {
+        console.error('Error fetching attendance:', error);
+      }
+    }
+  };
  
   useEffect(() => {
-    const fetchAttendance = async () => {
-      const userId = auth.currentUser?.uid;
-      if (userId) {
-        const attendance = await getAttendance(userId);
-        setAttendanceData(attendance);
-      }
-    };
-    fetchAttendance();
-  }, []);
+    fetchMonthlyAttendance(currentDate);
+  }, [currentDate]);
+
+  const handleMonthChange = async (direction: 'prev' | 'next') => {
+    const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + (direction === 'next' ? 1 : -1), 1);
+    setCurrentDate(newDate);
+  };
 
   const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
   const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
@@ -40,10 +54,13 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
     currentDate.getMonth() === today.getMonth() &&
     day === today.getDate();
 
-  const getStickerPath = (stickerNumber: number, isCompleted: boolean) => {
-    return isCompleted 
-      ? `/img/stickers/full-sticker${stickerNumber}.png`
-      : `/img/stickers/empty-sticker${stickerNumber}.png`;
+  const getStickerPath = (day: number) => {
+    const attendance = monthlyAttendance[day];
+    if (!attendance) return null;
+    
+    return attendance.isComplete 
+      ? `/img/stickers/full-sticker${attendance.stickerType}.png`
+      : `/img/stickers/empty-sticker${attendance.stickerType}.png`;
   };
 
   return (
@@ -68,12 +85,16 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
           </h2>
         </div>
         <div className="flex">
-          <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}
-                  className="mx-1 px-3 py-1 text-gray-600 ">
-            &lt;
+          <button 
+            onClick={() => handleMonthChange('prev')}
+            className="mx-1 px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            &lt; 
           </button>
-          <button onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}
-                  className="mx-1 px-3 py-1 text-gray-600 ">
+          <button 
+            onClick={() => handleMonthChange('next')}
+            className="mx-1 px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          >
             &gt;
           </button>
         </div>
@@ -91,30 +112,32 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
         {Array(firstDayOfMonth).fill(null).map((_, index) => (
           <div key={`empty-${index}`} className="aspect-square border-r-2 border-b-2 border-gray-200" />
         ))}
-        {days.map(day => (
-          <button
-            key={day}
-            onClick={() => handleDayClick(day)}
-            className={`relative aspect-square border-r-2 border-b-2 border-gray-200`}
-          >
-            <div className="absolute top-2 left-2 text-sm">
-              {day}
-            </div>
-            {isToday(day) && (
-              <div className="absolute inset-0 flex items-center justify-center pulse-animation">
-                <Image
-                  src={getStickerPath(
-                    attendanceData?.stickerType || Math.floor(Math.random() * 4) + 1,
-                    attendanceData?.isComplete || false
-                  )}
-                  alt={attendanceData?.isComplete ? "Full sticker" : "Empty sticker"}
-                  width={40}
-                  height={40}
-                />
+        {days.map(day => {
+          const stickerPath = getStickerPath(day);
+          const isCurrentDay = isToday(day);
+          
+          return (
+            <button
+              key={day}
+              onClick={() => handleDayClick(day)}
+              className={`relative aspect-square border-r-2 border-b-2 border-gray-200`}
+            >
+              <div className="absolute top-2 left-2 text-sm">
+                {day}
               </div>
-            )}
-          </button>
-        ))}
+              {stickerPath && (
+                <div className={`absolute inset-0 flex items-center justify-center ${isCurrentDay ? 'pulse-animation' : ''}`}>
+                  <Image
+                    src={stickerPath}
+                    alt="Sticker"
+                    width={40}
+                    height={40}
+                  />
+                </div>
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
