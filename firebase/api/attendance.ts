@@ -67,7 +67,6 @@ export async function getMonthlyStats(userId: string, year: number, month: numbe
       dailyRef,
       where("year", "==", year),
       where("month", "==", month),
-      where("userId", "==", userId),
       where("isComplete", "==", true)
     );
   }
