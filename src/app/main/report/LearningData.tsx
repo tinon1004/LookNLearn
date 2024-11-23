@@ -8,6 +8,7 @@ import { getDailyLearning, DailyLearning, getLastSevenDaysLearning } from '@/fir
 import { getLastSevenDaysQuizData } from '@/firebase/api/quiz';
 import { getLastSevenDaysAnalysisData } from '@/firebase/api/analysis';
 import { collection, getDocs } from "firebase/firestore";
+import { Info } from 'lucide-react';
 
 interface AccuracyData {
   date: string;
@@ -39,9 +40,11 @@ interface EmotionAccuracy {
 
 const EmotionLearningReport = () => {
   const [accuracyData, setAccuracyData] = useState<AccuracyData[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dailyLearningData, setDailyLearningData] = useState<DailyLearning | null>(null);
   const [dailySessionsData, setDailySessionsData] = useState<{ date: string; totalSessions: number }[]>([]);
-  
+  const [showReportHelp, setShowReportHelp] = useState(false);
+
   const [emotionStats, setEmotionStats] = useState<{ 
         bestEmotion: string;
         needsPracticeEmotion: string;
@@ -186,7 +189,15 @@ const EmotionLearningReport = () => {
     <div className="container mx-auto p-6 max-w-7xl">
       <div className="bg-white rounded-3xl shadow-sm p-8 mt-6">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-xl font-medium">감정 학습 리포트</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-medium">감정 학습 리포트</h2>
+            <button
+              onClick={() => setShowReportHelp(true)}
+              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <Info size={20} className="text-blue-500" />
+            </button>
+          </div>
           <button 
             onClick={generatePDF}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg flex items-center gap-2 hover:bg-blue-600 transition-colors"
@@ -301,6 +312,52 @@ const EmotionLearningReport = () => {
             </div>
           </div>
         </div>
+        
+        {showReportHelp && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative shadow-xl">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">감정 학습 리포트 안내</h3>
+                <button 
+                  onClick={() => setShowReportHelp(false)}
+                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <p className="text-blue-600 text-sm">
+                    이 리포트는 최근 7일 동안의 <br/> 학습 데이터를 기반으로 작성되었습니다.
+                  </p>
+                </div>
+                
+                <div>
+                  <h4 className="font-medium mb-2">리포트 구성</h4>
+                  <ul className="space-y-2 text-gray-600 text-sm">
+                    <li>• <span className="font-medium">학습 정확도 추이:</span> 퀴즈와 표정 분석의 일별 정확도를 보여줍니다.</li>
+                    <li>• <span className="font-medium">감정별 학습 분포:</span> 학습한 감정들의 비율을 확인할 수 있습니다.</li>
+                    <li>• <span className="font-medium">일별 학습 횟수:</span> 날짜별 학습 세션 수를 표시합니다.</li>
+                    <li>• <span className="font-medium">학습 통계 요약:</span> 전체 학습 세트 수와 평균 정확도 등을 보여줍니다.</li>
+                  </ul>
+                </div>
+
+                <p className="text-sm text-gray-500 mt-4">
+                  지속적인 학습을 통해 감정 표현 능력을 향상시켜보세요!
+                </p>
+              </div>
+              
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={() => setShowReportHelp(false)}
+                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
