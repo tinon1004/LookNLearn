@@ -122,11 +122,13 @@ export default function LearningStep1Page() {
       <div className="min-h-screen bg-gray-100 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-10">
+          <div className="relative w-full h-[400px] mb-4"> 
             <img 
               src={currentImage.src} 
               alt="감정 표현" 
-              className="w-full h-full object-cover rounded-lg mb-4"
+              className="w-full h-full object-contain rounded-lg" 
             />
+          </div>
             <p className="text-center text-gray-700">
               {currentImage.description}
             </p>
