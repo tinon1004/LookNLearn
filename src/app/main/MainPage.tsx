@@ -4,7 +4,6 @@ import React, { useState, useEffect  } from 'react';
 import { useRouter } from 'next/navigation';
 import Calendar from './Calendar';
 import StickerStatus from './StickerStatus';
-import BadgeStatus from './BadgeStatus';
 import Image from 'next/image';
 import { UserProfile } from '@/firebase/api/auth';
 import { auth, db } from '@/firebase/firebaseConfig';

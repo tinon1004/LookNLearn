@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Camera } from 'lucide-react';
 
 export default function EmotionWarmup() {
   const router = useRouter();
