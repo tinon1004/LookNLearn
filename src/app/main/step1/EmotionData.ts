@@ -64,7 +64,7 @@ export const imageData: ImageData[] = [
   {
     src: '/img/emotion/happy3.png',
     correctEmotion: '행복한, 좋은 표정',
-    description: '일기를 다 쓴 후 부모님이 칭찬을 해주셨어요. 어떤 표정을 짓고 있을까요?'
+    description: '퍼즐을 다 맞춘 후 부모님이 칭찬을 해주셨어요. 어떤 표정을 짓고 있을까요?'
   },
   {
     src: '/img/emotion/happy4.png',
@@ -115,29 +115,24 @@ export const imageData: ImageData[] = [
   {
     src: '/img/emotion/scared1.png',
     correctEmotion: '두려운, 무서운 표정',
-    description: '잠을 자다가 악몽을 꾸었어요. 어떤 표정을 짓고 있을까요?'
+    description: '높은 곳에서 밑을 내려다보고 있습니다. 어떤 표정을 짓고 있을까요?'
   },
   {
     src: '/img/emotion/scared2.png',
     correctEmotion: '두려운, 무서운 표정',
-    description: '높은 곳에서 밑을 내려다보고 있습니다. 어떤 표정을 짓고 있을까요?'
+    description: '병원에서 주사를 맞아야 해요. 어떤 표정을 짓고 있을까요?'
   },
   {
     src: '/img/emotion/scared3.png',
     correctEmotion: '두려운, 무서운 표정',
-    description: '-병원에서 주사를 맞아야 해요. 어떤 표정을 짓고 있을까요?'
+    description: '잠을 자다가 악몽을 꾸었어요. 어떤 표정을 짓고 있을까요?'
   },
 
   // 놀란, 놀라는 표정
   {
-    src: '/img/emotion/surprised1.png',
-    correctEmotion: '놀란, 놀라는 표정',
-    description: '생일 선물로 원하던 장난감을 받았습니다. 어떤 표정을 짓고 있을까요?'
-  },
-  {
     src: '/img/emotion/surprised2.png',
     correctEmotion: '놀란, 놀라는 표정',
-    description: '갑자기 큰 천둥 번개 소리가 났습니다. 어떤 표정을 짓고 있을까요?'
+    description: '생일 선물로 원하던 장난감을 받았습니다. 어떤 표정을 짓고 있을까요?'
   },
   {
     src: '/img/emotion/surprised3.png',
