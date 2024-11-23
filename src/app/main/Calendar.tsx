@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { auth } from '@/firebase/firebaseConfig';
 import { getMonthlyAttendance, AttendanceRecord } from '@/firebase/api/attendance';
+import { Info } from 'lucide-react';
 
 type CalendarProps = {
   onDayClick: (day: number, year: number, month: number) => void;
@@ -12,6 +13,7 @@ type CalendarProps = {
 const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [monthlyAttendance, setMonthlyAttendance] = useState<{ [key: string]: AttendanceRecord }>({});
+  const [showHelp, setShowHelp] = useState(false);
   const today = new Date();
 
   const fetchMonthlyAttendance = async (date: Date) => {
@@ -86,9 +88,17 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
           <h2 className="text-sm text-black-600">
             {currentDate.getFullYear()}년 {currentDate.getMonth() + 1}월
           </h2>
-          <h2 className="text-xl font-bold">
-            룩앤런 출석현황
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-bold">
+              룩앤런 출석현황
+            </h2>
+            <button
+              onClick={() => setShowHelp(true)}
+              className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <Info size={20} className="text-blue-500" />
+            </button>
+          </div>
         </div>
         <div className="flex">
           <button 
@@ -145,6 +155,64 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
           );
         })}
       </div>
+
+        {showHelp && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative shadow-xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">출석현황 도움말</h3>
+              <button 
+                onClick={() => setShowHelp(false)}
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-gray-600">
+                매일 학습을 완료하면 <br/> 귀여운 캐릭터 스티커를 모을 수 있어요! 🎉
+              </p>
+              
+              <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+                <Image
+                  src="/img/stickers/empty-sticker1.png"
+                  alt="Empty Sticker"
+                  width={30}
+                  height={30}
+                />
+                <span className="text-gray-600 text-sm">
+                  빈 스티커: 아직 오늘의 학습을 완료하지 않았어요.
+                </span>
+              </div>
+              
+              <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg">
+                <Image
+                  src="/img/stickers/full-sticker1.png"
+                  alt="Full Sticker"
+                  width={30}
+                  height={30}
+                />
+                <span className="text-gray-600 text-sm">
+                  컬러 스티커: 오늘의 학습을 완료했어요!
+                </span>
+              </div>
+              
+              <p className="text-gray-600">
+                매일 학습을 완료하고 다양한 캐릭터 스티커를 수집해보세요.
+              </p>
+            </div>
+            
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setShowHelp(false)}
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
