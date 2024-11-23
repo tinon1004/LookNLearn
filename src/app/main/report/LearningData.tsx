@@ -3,12 +3,11 @@ import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
     BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer
   } from 'recharts';
-import { auth } from '@/firebase/firebaseConfig';
-import { getDailyLearning, DailyLearning } from '@/firebase/api/dailyLearning';
+import { auth, db } from '@/firebase/firebaseConfig';
+import { getDailyLearning, DailyLearning, getLastSevenDaysLearning } from '@/firebase/api/dailyLearning';
 import { getLastSevenDaysQuizData } from '@/firebase/api/quiz';
 import { getLastSevenDaysAnalysisData } from '@/firebase/api/analysis';
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/firebase/firebaseConfig";
 
 interface AccuracyData {
   date: string;
@@ -41,7 +40,8 @@ interface EmotionAccuracy {
 const EmotionLearningReport = () => {
   const [accuracyData, setAccuracyData] = useState<AccuracyData[]>([]);
   const [dailyLearningData, setDailyLearningData] = useState<DailyLearning | null>(null);
-
+  const [dailySessionsData, setDailySessionsData] = useState<{ date: string; totalSessions: number }[]>([]);
+  
   const [emotionStats, setEmotionStats] = useState<{ 
         bestEmotion: string;
         needsPracticeEmotion: string;
@@ -107,6 +107,8 @@ const EmotionLearningReport = () => {
             }
 
             const learningData = await getDailyLearning(userId);
+            const lastSevenDaysData = await getLastSevenDaysLearning(userId);
+            setDailySessionsData(lastSevenDaysData);
             setDailyLearningData(learningData);
             const analysisData = await getLastSevenDaysAnalysisData(userId);
             const quizData = await getLastSevenDaysQuizData(userId);
@@ -145,25 +147,10 @@ const EmotionLearningReport = () => {
   };
 
   const generateDailyPracticeData = (): DailyPractice[] => {
-    const data = [];
-    const lastSessionDate = dailyLearningData?.lastSessionDate 
-      ? new Date(dailyLearningData.lastSessionDate)
-      : null;
-    const lastSessionDay = lastSessionDate?.getDay();
-  
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      const currentDay = date.getDay();
-      
-      data.push({
-        day: getDayOfWeek(date),
-        sessions: currentDay === lastSessionDay && dailyLearningData 
-          ? dailyLearningData.totalSessions 
-          : 0
-      });
-    }
-    return data;
+    return dailySessionsData.map(data => ({
+      day: getDayOfWeek(new Date(data.date)),
+      sessions: data.totalSessions
+    }));
   };
 
   const dailyPracticeData = generateDailyPracticeData();
@@ -172,9 +159,10 @@ const EmotionLearningReport = () => {
   const calculateStats = (): Stats => {
     const nonZeroAccuracies = accuracyData.filter(day => day.quizAccuracy > 0);
     const nonZeroExpressionAccuracies = accuracyData.filter(day => day.expressionAccuracy > 0);
+    const totalWeekSessions = dailySessionsData.reduce((sum, day) => sum + day.totalSessions, 0);
 
     return {
-      totalSessions: dailyLearningData?.totalSessions || 0,
+      totalSessions: totalWeekSessions,
       avgQuizAccuracy: nonZeroAccuracies.length > 0
         ? Math.round(nonZeroAccuracies.reduce((sum, day) => sum + day.quizAccuracy, 0) / nonZeroAccuracies.length)
         : 0,

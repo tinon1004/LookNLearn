@@ -18,6 +18,27 @@ async function getDailyDocRef(userId: string, date: string) {
   return doc(collection(doc(db, "dailyLearning", userId), "daily"), date);
 }
 
+export async function getLastSevenDaysLearning(userId: string): Promise<{ date: string; totalSessions: number }[]> {
+  const result = [];
+  const today = new Date();
+
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(today);
+    date.setDate(date.getDate() - i);
+    const dateStr = date.toISOString().split("T")[0];
+    
+    const docRef = await getDailyDocRef(userId, dateStr);
+    const docSnap = await getDoc(docRef);
+    
+    result.push({
+      date: dateStr,
+      totalSessions: docSnap.exists() ? (docSnap.data() as DailyLearning).totalSessions : 0
+    });
+  }
+
+  return result.reverse();
+}
+
 export async function getDailyLearning(userId: string): Promise<DailyLearning> {
   const today = getTodayDate();
   const docRef = await getDailyDocRef(userId, today)
@@ -63,3 +84,5 @@ export async function markFirstCompletionDone(userId: string): Promise<void> {
 
   await updateDoc(docRef, { isFirstCompletion: false });
 }
+
+
