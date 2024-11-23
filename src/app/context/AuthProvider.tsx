@@ -25,11 +25,16 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       setUser(user);
       setLoading(false);
 
-      // 로그인 상태에 따른 리다이렉션
-      if (!user && pathname !== '/') {
-        router.push('/');
-      } else if (user && pathname === '/') {
-        router.push('/main');
+      const publicPaths = ['/', '/login', '/signup'];
+      
+      if (!user) {
+        if (!publicPaths.includes(pathname)) {
+          router.push('/');
+        }
+      } else {
+        if (pathname === '/') {
+          router.push('/main');
+        }
       }
     });
 

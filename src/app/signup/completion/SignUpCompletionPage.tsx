@@ -7,7 +7,7 @@ export default function SignUpCompletionPage() {
   const router = useRouter();
 
   const handleGoToMainPage = () => {
-    router.push('/');
+    router.push('/main/login');
   };
 
   return (

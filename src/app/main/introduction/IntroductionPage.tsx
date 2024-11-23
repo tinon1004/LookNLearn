@@ -65,7 +65,7 @@ export default function IntroductionPage() {
             onClick={() => router.push('/main/step1')}
             className="bg-blue-500 text-white text-xl font-semibold py-4 px-8 rounded-xl shadow-lg hover:bg-blue-600 transform transition duration-300 hover:scale-105"
           >
-            지금 시작하기
+            지금 학습 시작하기
           </button>
         </div>
       </section>
