@@ -56,6 +56,12 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
 
   const getStickerPath = (day: number) => {
     const attendance = monthlyAttendance[day];
+    const isCurrentDay = isToday(day);
+
+    if (isCurrentDay && !attendance) {
+      return '/img/stickers/empty-sticker1.png';
+    }
+
     if (!attendance) return null;
     
     return attendance.isComplete 
