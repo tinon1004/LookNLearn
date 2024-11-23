@@ -202,6 +202,7 @@ const Calendar: React.FC<CalendarProps> = ({ onDayClick }) => {
               </p>
             </div>
             
+
             <div className="mt-6 flex justify-end">
               <button
                 onClick={() => setShowHelp(false)}

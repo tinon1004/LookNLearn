@@ -105,25 +105,38 @@ const MainPage: React.FC = () => {
         </div>
       </header>
      
-        <div className="max-w-5xl mx-auto mt-3">
+      <div className="max-w-2xl mx-auto mt-3 w-full px-4 mb-16">
         <Calendar onDayClick={handleDayClick} />
-        <div className="flex gap-4 w-full max-w-5xl mt-4">
-          <StickerStatus />
-          <BadgeStatus />
-        </div>
-        <div className="flex justify-center mt-8 mb-4">
-          <button
-            onClick={() => router.push('/main/introduction')} 
-            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-300"
-          >
-            서비스 소개
-          </button>
-          <button 
-            onClick={() => router.push('/main/information')} 
-            className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-300 ml-4"
-          >
-            정보 자료실
-          </button>
+        <div className="flex flex-col md:flex-row gap-4 w-full mt-4">
+          <div className="w-full md:w-2/3">
+            <StickerStatus />
+          </div>
+        
+          <div className="w-full md:w-1/3 flex flex-col gap-4">
+            <div className="bg-white rounded-xl shadow-lg p-4 w-full h-full flex flex-col">
+              <h3 className="text-lg font-semibold text-center mb-2">더 알아보기</h3>
+              <div className="flex flex-col gap-4 flex-grow justify-center">
+                <button 
+                  onClick={() => router.push('/main/report')} 
+                  className="bg-blue-500 text-white font-semibold py-3 px-4 rounded hover:bg-blue-700 transition duration-300 w-full"
+                >
+                  학습 통계 보고서
+                </button>
+                <button 
+                  onClick={() => router.push('/main/information')} 
+                  className="bg-blue-500 text-white font-semibold py-3 px-4 rounded hover:bg-blue-700 transition duration-300 w-full"
+                >
+                  학습 정보 자료실
+                </button>
+                <button
+                  onClick={() => router.push('/main/introduction')} 
+                  className="bg-blue-500 text-white font-semibold py-3 px-4 rounded hover:bg-blue-700 transition duration-300 w-full"
+                >
+                  서비스 소개
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         </div>
     </div>
