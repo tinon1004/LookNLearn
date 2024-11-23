@@ -9,6 +9,8 @@ import { getLastSevenDaysQuizData } from '@/firebase/api/quiz';
 import { getLastSevenDaysAnalysisData } from '@/firebase/api/analysis';
 import { collection, getDocs } from "firebase/firestore";
 import { Info } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 interface AccuracyData {
   date: string;
@@ -44,6 +46,7 @@ const EmotionLearningReport = () => {
   const [dailyLearningData, setDailyLearningData] = useState<DailyLearning | null>(null);
   const [dailySessionsData, setDailySessionsData] = useState<{ date: string; totalSessions: number }[]>([]);
   const [showReportHelp, setShowReportHelp] = useState(false);
+  const [reportRef, setReportRef] = useState<HTMLDivElement | null>(null);
 
   const [emotionStats, setEmotionStats] = useState<{ 
         bestEmotion: string;
@@ -182,12 +185,56 @@ const EmotionLearningReport = () => {
   const stats = calculateStats();
 
   const generatePDF = async (): Promise<void> => {
-    console.log('Generating PDF report');
+    if (!reportRef) return;
+
+    try {
+      const canvas = await html2canvas(reportRef, {
+        scale: 2, 
+        logging: false,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgWidth = 210; 
+      const pageHeight = 297;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgData = canvas.toDataURL('image/png');
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      const now = new Date();
+      const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+      
+      const year = koreaTime.getFullYear();
+      const month = String(koreaTime.getMonth() + 1).padStart(2, '0');
+      const day = String(koreaTime.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+      
+      pdf.save(`감정 학습 리포트_${dateStr}.pdf`);
+
+    } catch (error) {
+      console.error('PDF 생성 중 오류 발생:', error);
+    }
   };
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
-      <div className="bg-white rounded-3xl shadow-sm p-8 mt-6">
+      <div 
+        ref={setReportRef}
+        className="bg-white rounded-3xl shadow-sm p-8"
+      >
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-2">
             <h2 className="text-xl font-medium">감정 학습 리포트</h2>
@@ -311,6 +358,7 @@ const EmotionLearningReport = () => {
               </div>
             </div>
           </div>
+          </div>
         </div>
         
         {showReportHelp && (
@@ -358,7 +406,6 @@ const EmotionLearningReport = () => {
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 };
