@@ -103,7 +103,8 @@ export default function LearningStep1Page() {
     if (!user || !selectedEmotion) return;
     
     const newCount = await incrementDailyCount(user.uid);
-    router.push(`/main/step2?emotion=${encodeURIComponent(selectedEmotion)}&count=${newCount}`);
+    //router.push(`/main/step2?emotion=${encodeURIComponent(selectedEmotion)}&count=${newCount}`);
+    router.push(`/main/warmup?emotion=${encodeURIComponent(selectedEmotion)}&count=${newCount}`);
   };
 
   return (
