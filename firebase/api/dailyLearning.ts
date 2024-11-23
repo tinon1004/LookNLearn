@@ -20,10 +20,11 @@ async function getDailyDocRef(userId: string, date: string) {
 
 export async function getLastSevenDaysLearning(userId: string): Promise<{ date: string; totalSessions: number }[]> {
   const result = [];
-  const today = new Date();
+  const now = new Date();
+  const koreaTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
 
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today);
+  for(let i = 6; i >= 0; i--) { 
+    const date = new Date(koreaTime);
     date.setDate(date.getDate() - i);
     const dateStr = date.toISOString().split("T")[0];
     
@@ -36,7 +37,7 @@ export async function getLastSevenDaysLearning(userId: string): Promise<{ date: 
     });
   }
 
-  return result.reverse();
+  return result;
 }
 
 export async function getDailyLearning(userId: string): Promise<DailyLearning> {
