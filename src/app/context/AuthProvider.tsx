@@ -25,7 +25,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       setUser(user);
       setLoading(false);
 
-      const publicPaths = ['/', '/login', '/signup'];
+      const publicPaths = ['/', '/login','/signup', '/signup/score', '/signup/symptoms'];
       
       if (!user) {
         if (!publicPaths.includes(pathname)) {
