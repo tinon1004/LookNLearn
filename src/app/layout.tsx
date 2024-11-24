@@ -33,9 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-       <head>
+       {/* <head>
         <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
-      </head>
+      </head> */}
       <body className={inter.className}>
         <AuthProvider>{children}</AuthProvider>
       </body>

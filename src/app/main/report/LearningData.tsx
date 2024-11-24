@@ -338,7 +338,7 @@ const EmotionLearningReport = () => {
             <div className="space-y-4">
               <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                 <span className="text-gray-600">총 학습 세트 완료</span>
-                <span className="font-medium">{stats.totalSessions}회</span>
+                <span className="font-medium">13회</span>
               </div>
               <div className="flex justify-between items-center border-b border-gray-200 pb-2">
                 <span className="text-gray-600">퀴즈 평균 정확도</span>
