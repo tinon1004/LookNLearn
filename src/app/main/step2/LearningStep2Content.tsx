@@ -114,8 +114,10 @@ export default function LearningStep2Content() {
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           body: formData,
-          mode: 'cors',
-        });
+          headers: {
+            'Accept': 'application/json',
+        },
+      });
 
         if (!uploadResponse.ok) {
           throw new Error('업로드 실패');
