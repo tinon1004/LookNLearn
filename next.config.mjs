@@ -7,6 +7,19 @@ const nextConfig = {
     compiler: {
         removeConsole: process.env.NODE_ENV !== "development"    
     },
+    async headers() {
+        return [
+            {
+                source: '/:path*',
+                headers: [
+                    {
+                        key: 'Content-Security-Policy',
+                        value: `default-src 'self' ${process.env.NEXT_PUBLIC_FLASK_APIKEY}; img-src 'self' data: blob: ${process.env.NEXT_PUBLIC_FLASK_APIKEY}; script-src 'self' 'unsafe-eval' 'unsafe-inline';`
+                    }
+                ]
+            }
+        ];
+    },
     async rewrites() {
         return [
             {
