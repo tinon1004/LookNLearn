@@ -109,15 +109,13 @@ export default function LearningStep2Content() {
         const blob = await fetch(`data:image/jpeg;base64,${base64Data}`).then(res => res.blob());
         const formData = new FormData();
         formData.append('image', blob, 'captured_image.jpg');
-        //const apiUrl = process.env.NEXT_PUBLIC_FLASK_APIKEY + '/upload';
+        const apiUrl = process.env.NEXT_PUBLIC_FLASK_APIKEY + '/upload';
 
-        const uploadResponse = await fetch('/api/upload', {
+        const uploadResponse = await fetch(apiUrl, {
           method: 'POST',
           body: formData,
-          headers: {
-            'Accept': 'application/json',
-        },
-      });
+          mode: 'cors',
+        });
 
         if (!uploadResponse.ok) {
           throw new Error('업로드 실패');
