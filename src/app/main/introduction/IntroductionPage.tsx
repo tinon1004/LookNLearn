@@ -16,7 +16,7 @@ export default function IntroductionPage() {
       emoji: '🤖',
       description: 'AI로 더 정확한 감정 분석을 만들어요',
       experience: [
-        'Pingram(Quram) 엔진 개발, 러닝 학습 및 ORC 과제 수행',
+        'Fingram(Quram) 엔진 개발, 러닝 학습 및 ORC 과제 수행',
         'UNIST(울산과학기술원) Image Enhancement 연구'
       ]
     },
