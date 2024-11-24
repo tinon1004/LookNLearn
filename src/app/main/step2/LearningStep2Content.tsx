@@ -122,6 +122,7 @@ export default function LearningStep2Content() {
         }
 
         const data: PredictionResponse = await uploadResponse.json();
+        console.log('API 응답 데이터:', data);
           
         if (data.results && data.results[0] && data.results[0].predictions) {
           const prediction = data.results[0].predictions[0];
@@ -232,7 +233,7 @@ export default function LearningStep2Content() {
               <div className="flex flex-col items-center space-y-4">
                 <h2 className="text-2xl font-semibold">표정 분석 결과</h2>
                 <p className="text-xl">
-                  <span className="font-medium">{results[0].label}</span>
+                  <span className="font-medium">{Math.round(results[0].probability * 100)}%</span>
                 </p>
               </div>
           </div>

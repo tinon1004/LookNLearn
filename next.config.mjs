@@ -11,7 +11,7 @@ const nextConfig = {
         return [
             {
                 source: "/api/upload",
-                destination: `${process.env.NEXT_PUBLIC_FLASK_APIKEY}/upload`,
+                destination: process.env.NEXT_PUBLIC_FLASK_APIKEY + "/upload",
             }
         ];
     }
