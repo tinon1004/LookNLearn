@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { ChevronDown } from 'lucide-react';
 
 export default function IntroductionPage() {
   const router = useRouter();
@@ -47,6 +48,7 @@ export default function IntroductionPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <section className="relative h-screen flex items-center justify-center bg-gradient-to-b from-blue-100 to-white">
+      <div className="flex-grow flex items-center justify-center w-full">
         <div className="text-center max-w-4xl mx-auto px-4">
           <div className="mx-auto h-40 w-80 relative">
             <Image
@@ -67,6 +69,13 @@ export default function IntroductionPage() {
           >
             지금 시작하기
           </button>
+        </div>
+        </div>
+        <div className="absolute bottom-8 left-0 right-0">
+          <div className="flex flex-col items-center animate-bounce">
+            <p className="text-gray-600 mb-2">아래로 스크롤</p>
+            <ChevronDown className="w-6 h-6 text-gray-600" />
+          </div>
         </div>
       </section>
 
